@@ -5,22 +5,29 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Big Game Fighting</title>
+    
     <style>
         html {
-            background-color: #252525;
+            background-color: #000000;
         }
         canvas {
-            margin-right: auto;
-            margin-left: auto;
-            display: block;
-            border: 7px solid #ffe599;
             background-color: #252525;
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
         }
+
     </style>
 </head>
 
 <body>
-    <canvas height="1000" width="1000"></canvas>
+    
+    <canvas height="window.innerheight" width="window.innerwidth"></canvas>
     <script src="FIGHTING.js"></script>
     <script src="music_basic.js"></script>
 </body>
