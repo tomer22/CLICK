@@ -1,7 +1,7 @@
 // first try at live beat detection from fft data
 // contains two classes : one for onset detection - OnsetDetect and one to detect when amplitude reaches a certain treshold - BeatDetect (probably ill named)
 
-var file ='../audio/SANS.mp3'
+var file ='../audio/ASGORE.mp3'
 //var file ='../audio/MUFFET.mp3'
 
 
@@ -46,7 +46,7 @@ function setup() {
   pg.stroke(0);
   let divsz = 25;
   let divsz2 = 50;
-  
+  console.log(peaks.length);
   for (var i = 0 ; i < peaks.length ; i=i+divsz){
     let curtol = 0;
     let burtol =  0;
@@ -65,13 +65,13 @@ function setup() {
         MAD = MAD + Math.abs(val-avg);
     }
     aMAD = MAD/divsz;
-    console.log(aMAD*avg);
+    //console.log(aMAD*avg);
     avgs.push(aMAD);
     avgs2.push(avg);
     avgs3.push(avg22);
     
   }
-  console.log(avgs3)
+  //console.log(avgs3)
   
   for (var i = 0 ; i < peaks.length ; i++){
     var x = map(i,0,peaks.length,0,width);
@@ -86,8 +86,10 @@ function setup() {
   sg.stroke(0);
   
   for (var i = 0 ; i < peaks.length ; i++){
-    var x = map(i,0,peaks.length,0,width);
-    var y = map(peaks[i],0,2,0,150);
+     var x = map(i,0,peaks.length,0,width);
+     var y = map(peaks[i],0,2,0,150);
+    //var x = map(i,0,peaks.length,0,width);
+    //var y = map(avgs3[Math.floor(i/divsz)],0,1,0,150);
     sg.line(x,0,x,y);
     sg.line(x,0,x,-y);
    }
@@ -98,7 +100,7 @@ function setup() {
    cg.stroke(0);
    for (var i = 0 ; i < peaks.length ; i++){
     var x = map(i,0,peaks.length,0,width);
-    var y = map(avgs[Math.floor(i/divsz)]/avgs2[Math.floor(i/divsz)],0,5,0,150);
+    var y = map(avgs3[Math.floor(i/divsz)],0,.1,0,150);
     cg.line(x,0,x,y);
     cg.line(x,0,x,-y);
    }
@@ -109,7 +111,7 @@ function setup() {
    dg.stroke(0);
    for (var i = 0 ; i < peaks.length ; i++){
     var x = map(i,0,peaks.length,0,width);
-    var y = map(avgs3[Math.floor(i/divsz)],0,1,0,150);
+    var y = map(-Math.abs(avgs3[Math.floor(i/divsz)])+Math.abs(avgs[Math.floor(i/divsz)+1]/10),0,.1,0,150);
     dg.line(x,0,x,y);
     dg.line(x,0,x,-y);
    }
