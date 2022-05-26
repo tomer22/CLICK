@@ -1,15 +1,14 @@
-"use strict";
 // Some standard user-input events. Define handling of these events here.
-let player = new Player(canvas.width / 2, canvas.height - 20);
+var player = new Player(canvas.width / 2, canvas.height - 20);
 window.addEventListener("load", function () {
     //Handle when the whole page finishes loading
     //Use this to "set up" the initial state of things;
     //Often, this includes populating the actorList.
     // A sample:
     actorList.addActor(player);
-    let rock = new Rock(canvas.width / 2, 10);
+    var rock = new Rock(canvas.width / 2, 10);
     actorList.addActor(rock);
-    let fruit = new Fruit(canvas.width / 2, 100);
+    var fruit = new Fruit(canvas.width / 2, 100);
     actorList.addActor(fruit);
 });
 canvas.addEventListener("click", function (event) {
@@ -48,10 +47,10 @@ document.addEventListener("keyup", function (event) {
 // let lastMousePosition = {x: 0, y:0};
 // let keysStatus = {leftKeyDown: false, rightKeyDown: false};
 setInterval(function () {
-    actorList.addActor(new Fruit(Math.random() * canvas.width, -50));
+    actorList.addActor(new Fruit(Math.random() * (620) + 690, -50));
 }, 2000);
 setTimeout(createRock, Math.random() * 2000 + 1000);
 function createRock() {
-    actorList.addActor(new Rock(Math.random() * canvas.width, -50));
+    actorList.addActor(new Rock(Math.random() * (620) + 690, -50));
     setTimeout(createRock, Math.random() * 2000 + 1000);
 }

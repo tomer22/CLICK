@@ -11,6 +11,12 @@ function draw(){
     // Clear the stage!
     ctx.clearRect(0,0,canvas.width, canvas.height);
 
+    // draw playspace
+    ctx.strokeStyle = "#ffe599";
+    ctx.lineWidth = 7;
+    ctx.strokeRect(610,190, 700, 700);
+
+
     // Re-draw all the actors!
     for (const actor of actorList.actors){
         actor.draw();
