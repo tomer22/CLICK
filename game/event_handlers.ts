@@ -64,12 +64,12 @@ document.addEventListener("keyup", function(event:KeyboardEvent){
 // let keysStatus = {leftKeyDown: false, rightKeyDown: false};
 
 setInterval( function() {
-    actorList.addActor( new Fruit( Math.random() * canvas.width, -50));
+    actorList.addActor( new Fruit( Math.random() * (620)+690, -50));
 }, 2000)
 
 setTimeout(createRock, Math.random() * 2000 + 1000);
 
 function createRock(){
-    actorList.addActor( new Rock( Math.random() * canvas.width, -50));
+    actorList.addActor( new Rock( Math.random() * (620)+690, -50));
     setTimeout(createRock, Math.random() * 2000 + 1000);
 }
