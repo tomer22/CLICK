@@ -62,8 +62,13 @@ class Player extends Actor {
     }
 
     draw() : void {
+        //ctx.fillStyle = "blue";
+        //ctx.fillRect(this.x - 10, this.y - 10, 20, 20);
         ctx.fillStyle = "blue";
-        ctx.fillRect(this.x - 10, this.y - 10, 20, 20);
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 20, 0 , Math.PI * 2);
+        ctx.closePath();
+        ctx.fill();
     }
 
     update() : void {
@@ -111,7 +116,8 @@ class Rock extends FallingCircle {
     update() {
         super.update()
         //check collision with player
-        if ( Math.sqrt( (this.x - player.x) ** 2 + (this.y - player.y) ** 2 ) < 20){
+        if ( Math.sqrt( (this.x - player.x) ** 2 + (this.y - player.y) ** 2 ) < 35){
+            
             actorList.removeActor(this);
             window.alert("You died from a rock!");
         }
@@ -127,7 +133,7 @@ class Fruit extends FallingCircle {
     update() {
         super.update()
         //check collision with player
-        if ( Math.sqrt( (this.x - player.x) ** 2 + (this.y - player.y) ** 2 ) < 20){
+        if ( Math.sqrt( (this.x - player.x) ** 2 + (this.y - player.y) ** 2 ) < 35){
             actorList.removeActor(this);
         }
     }
