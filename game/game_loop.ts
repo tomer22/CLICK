@@ -14,7 +14,7 @@ function draw(){
     // draw playspace
     ctx.strokeStyle = "#ffe599";
     ctx.lineWidth = 7;
-    ctx.strokeRect(290,10, 700, 700);
+    ctx.strokeRect(610,190, 700, 700);
 
 
     // Re-draw all the actors!

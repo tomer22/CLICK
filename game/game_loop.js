@@ -10,7 +10,7 @@ function draw() {
     // draw playspace
     ctx.strokeStyle = "#ffe599";
     ctx.lineWidth = 7;
-    ctx.strokeRect(290, 10, 700, 700);
+    ctx.strokeRect(610, 190, 700, 700);
     // Re-draw all the actors!
     for (var _i = 0, _a = actorList.actors; _i < _a.length; _i++) {
         var actor = _a[_i];
