@@ -1,7 +1,7 @@
 // first try at live beat detection from fft data
 // contains two classes : one for onset detection - OnsetDetect and one to detect when amplitude reaches a certain treshold - BeatDetect (probably ill named)
 
-var file ='../audio/ASGORE.mp3'
+var file ='../audio/SANS.mp3'
 //var file ='../audio/MUFFET.mp3'
 
 
@@ -19,6 +19,7 @@ var button;
 var detectors = [];
 var avgs = []
 var avgs2 = []
+var avgs3 = []
 
 // visual representation of detectors
 var beatBalls = [];
@@ -43,18 +44,22 @@ function setup() {
   pg.translate(0,75);
   pg.noFill();
   pg.stroke(0);
-  let divsz = 10;
+  let divsz = 25;
+  let divsz2 = 50;
   
   for (var i = 0 ; i < peaks.length ; i=i+divsz){
     let curtol = 0;
+    let burtol =  0;
     let vals = [];
     for (var j = 0 ; j < divsz ; j++){
       if (peaks[i+j]!==undefined){
         curtol += peaks[i+j];
+        burtol += peaks[i+j]-peaks[i+j+1];
         vals.push(peaks[i+j])
       }
     }
     let avg = curtol/divsz;
+    let avg22 = burtol/divsz;
     let MAD = 0
     for (let val of vals){
         MAD = MAD + Math.abs(val-avg);
@@ -63,8 +68,10 @@ function setup() {
     console.log(aMAD*avg);
     avgs.push(aMAD);
     avgs2.push(avg);
+    avgs3.push(avg22);
+    
   }
-  console.log(avgs)
+  console.log(avgs3)
   
   for (var i = 0 ; i < peaks.length ; i++){
     var x = map(i,0,peaks.length,0,width);
@@ -94,6 +101,17 @@ function setup() {
     var y = map(avgs[Math.floor(i/divsz)]/avgs2[Math.floor(i/divsz)],0,5,0,150);
     cg.line(x,0,x,y);
     cg.line(x,0,x,-y);
+   }
+   dg = createGraphics(width,150);
+   dg.background(100);
+   dg.translate(0,75);
+   dg.noFill();
+   dg.stroke(0);
+   for (var i = 0 ; i < peaks.length ; i++){
+    var x = map(i,0,peaks.length,0,width);
+    var y = map(avgs3[Math.floor(i/divsz)],0,1,0,150);
+    dg.line(x,0,x,y);
+    dg.line(x,0,x,-y);
    }
 
 
@@ -136,9 +154,9 @@ function draw() {
 	background(180);
 
 	image(pg,0,100); // display our waveform representation
-    image(cg,0,400);
-    image(sg,0,700);
-    
+    image(cg,0,300);
+    image(sg,0,500);
+    image(dg,0,700);    
 
   // draw playhead position 
   fill(255,255,180,150);
@@ -215,7 +233,7 @@ BeatBall.prototype.update = function() {
 	// fill(0);
 	// text(this.str,x,y);
 	// text("( "+detector.f1+" - "+detector.f2+"Hz )",x,y+10);
-  this.target *= 0.95;
+  this.target /= 2;
 }
 
 BeatBall.prototype.trigger = function(value) {
