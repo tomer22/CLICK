@@ -1,5 +1,6 @@
 "use strict";
 // Some standard user-input events. Define handling of these events here.
+
 // for easy changing of arrow keys <--> WASD
 const upKey = "w";
 const leftKey = "a";
@@ -12,6 +13,7 @@ let sDown = 0;
 let dDown = 0;
 let player = new Player(.5, .5);
 ;
+
 window.addEventListener("load", function () {
     //Handle when the whole page finishes loading
     //Use this to "set up" the initial state of things;

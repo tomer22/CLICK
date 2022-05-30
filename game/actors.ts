@@ -78,6 +78,7 @@ class Player extends Actor {
     }
 
     update() : void {
+
         this.r = size/20;
         this.x += this.xVelocity/(500);
         this.y += this.yVelocity/(500);
@@ -98,6 +99,14 @@ class Player extends Actor {
         }
     }
 
+        if ( this.x <= canvas.width/2-350 || this.x >= canvas.width/2+350) {
+            this.xVelocity = 0;
+        }
+    
+        //if you've touched a top or bottom "wall", flip the y component of ball speed
+        if ( this.y <= canvas.height/2-350 || this.y >= canvas.height/2+350) {
+            this.yVelocity = 0;
+        }
 
 }
 
@@ -143,9 +152,7 @@ class Rock extends FallingCircle {
             window.alert("You died from a rock!");
             actorList.removeActor(this);
         }
-        //     actorList.removeActor(this);
-        //     //
-        // }
+
     }
 }
 
