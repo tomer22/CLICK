@@ -1,24 +1,35 @@
-var canvas = document.querySelector("canvas");
-var ctx = canvas.getContext("2d");
-var FRAME_LENGTH = 30;
-var actorList = new ActorList();
+"use strict";
+const canvas = document.querySelector("canvas");
+const ctx = canvas.getContext("2d");
+const FRAME_LENGTH = 30;
+const actorList = new ActorList();
+let size;
+let shiftX;
+let shiftY;
+const backgroundColor = "#252525";
 //Draw ~ 30 times a second
-var drawIntervalId = window.setInterval(draw, FRAME_LENGTH);
+let drawIntervalId = window.setInterval(draw, FRAME_LENGTH);
 function draw() {
     // Clear the stage!
+    ctx.canvas.width = window.innerWidth - 20;
+    ctx.canvas.height = window.innerHeight - 20;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = backgroundColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     // draw playspace
-    ctx.strokeStyle = "#ffe599";
-    ctx.lineWidth = 7;
-    ctx.strokeRect(610, 190, 700, 700);
+    ctx.fillStyle = "#ffe599";
+    size = Math.min(2 * canvas.width / 3, 2 * canvas.height / 3);
+    shiftX = (canvas.width - size) / 2;
+    shiftY = (canvas.height - size) / 2;
+    ctx.fillRect(shiftX - size / 50, shiftY - size / 50, size + size / 25, size + size / 25);
+    ctx.fillStyle = backgroundColor;
+    ctx.fillRect(shiftX, shiftY, size, size);
     // Re-draw all the actors!
-    for (var _i = 0, _a = actorList.actors; _i < _a.length; _i++) {
-        var actor = _a[_i];
+    for (const actor of actorList.actors) {
         actor.draw();
     }
     //Update all actors
-    for (var _b = 0, _c = actorList.actors; _b < _c.length; _b++) {
-        var actor = _c[_b];
+    for (const actor of actorList.actors) {
         actor.update();
     }
 }
