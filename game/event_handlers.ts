@@ -1,6 +1,6 @@
 // Some standard user-input events. Define handling of these events here.
 
-let player : Player = new Player(canvas.width / 2, canvas.height - 20);
+let player : Player = new Player(canvas.width / 2, canvas.height / 2);
 
 window.addEventListener("load", function() {
     //Handle when the whole page finishes loading

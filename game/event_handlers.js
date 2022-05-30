@@ -1,5 +1,5 @@
 // Some standard user-input events. Define handling of these events here.
-var player = new Player(canvas.width / 2, canvas.height - 20);
+var player = new Player(canvas.width / 2, canvas.height / 2);
 window.addEventListener("load", function () {
     //Handle when the whole page finishes loading
     //Use this to "set up" the initial state of things;
