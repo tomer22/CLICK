@@ -5,7 +5,7 @@ const upKey = "w";
 const leftKey = "a";
 const downKey = "s";
 const rightKey = "d";
-let circles = 1;
+let circles = 2;
 // Didn't want a down down variable, so I stuck with the letters
 let wDown = 0;
 let aDown = 0;
@@ -30,19 +30,19 @@ document.addEventListener("keydown", function (event) {
         circles %= 4;
     }
     if (event.key === leftKey) {
-        player.xVelocity = -5;
+        player.xVelocity = -5 / (500);
         aDown = 1;
     }
     if (event.key === rightKey) {
-        player.xVelocity = 5;
+        player.xVelocity = 5 / (500);
         dDown = 1;
     }
     if (event.key === upKey) {
-        player.yVelocity = -5;
+        player.yVelocity = -5 / (500);
         wDown = 1;
     }
     if (event.key === downKey) {
-        player.yVelocity = 5;
+        player.yVelocity = 5 / (500);
         sDown = 1;
     }
 });
@@ -56,7 +56,7 @@ document.addEventListener("keyup", function (event) {
     if (event.key === leftKey) {
         aDown = 0;
         if (dDown) {
-            player.xVelocity = 5;
+            player.xVelocity = 5 / (500);
         }
         else {
             player.xVelocity = 0;
@@ -65,7 +65,7 @@ document.addEventListener("keyup", function (event) {
     if (event.key === rightKey) {
         dDown = 0;
         if (aDown) {
-            player.xVelocity = -5;
+            player.xVelocity = -5 / (500);
         }
         else {
             player.xVelocity = 0;
@@ -74,7 +74,7 @@ document.addEventListener("keyup", function (event) {
     if (event.key === upKey) {
         wDown = 0;
         if (sDown) {
-            player.yVelocity = 5;
+            player.yVelocity = 5 / (500);
         }
         else {
             player.yVelocity = 0;
@@ -83,7 +83,7 @@ document.addEventListener("keyup", function (event) {
     if (event.key === downKey) {
         sDown = 0;
         if (wDown) {
-            player.yVelocity = -5;
+            player.yVelocity = -5 / (500);
         }
         else {
             player.yVelocity = 0;
@@ -105,25 +105,30 @@ document.addEventListener("keyup", function (event) {
 //     if (circles==1){
 //         healBall();}
 // }, 700)
+// Draw healing ball
 function healBall() {
     actorList.addActor(new Fruit(Math.random()));
 }
+// Draw harmful balls in an interval
 setInterval(function () {
     if (circles == 1) {
         pealBall();
         //patternCircles(0,sign);
     }
 }, 150);
+// Changes the attack every 5 secs
 setInterval(function () {
-    circles++;
+    //circles++;
     circles %= 5;
 }, 5000);
+// Summon swords from some direction every so often
 setInterval(function () {
     if (!circles) {
         swordRain();
         //funkyRain();
     }
 }, 1200);
+// Create telegraph for attack, then do said wall attack after some time in a random spot
 setInterval(function () {
     if (circles == 2) {
         let side = Math.floor(Math.random() * 4);
@@ -134,18 +139,20 @@ setInterval(function () {
         setTimeout(function () { slam(side, count, spot); }, delay);
     }
 }, 500);
+// Squares appear in ground
 setInterval(function () {
     if (circles == 3) {
         mettaton();
-        //funkyRain();
     }
 }, 250);
+// Currently the sin graph
 setInterval(function () {
     if (circles == 4) {
         patternCircles(0, sign);
         //funkyRain();
     }
 }, 100);
+// Pattern circles accepts a function which dictates x -> y
 function patternCircles(lead, f) {
     actorList.addActor(new PatternRock(lead, f));
 }
@@ -154,12 +161,14 @@ function sign(x) {
     let spot = Math.sin(x * 3 * Math.PI);
     return (spot + 1) / 2;
 }
+// Creates expanding squares in a random spot
 function mettaton() {
     let count = 5;
     let hex = Math.floor(Math.random() * count);
     let hi = Math.floor(Math.random() * count);
     actorList.addActor(new expandingSquare((hex + .5) / count, (hi + .5) / count, .01, 1 / count, 50));
 }
+// Creates a set of triangles pointing in certain directions for telegraphing
 function slamWarning(side, count, spot, delay) {
     let b = 1 / (count * 2);
     let h = .5 / (count * 2);
@@ -179,6 +188,7 @@ function slamWarning(side, count, spot, delay) {
         }
     }
 }
+// Creates the evil wall which slams, then retracts
 function slam(side, count, spot) {
     let speed = .06;
     if (side === 0) {
@@ -194,6 +204,7 @@ function slam(side, count, spot) {
         actorList.addActor(new evilWall((Math.floor(spot) + .5) / count, 1, 1 / count, 0, 0, -speed));
     }
 }
+// summons swords from one of three directions
 function swordRain(count = Math.random() * 4 + 5, speed = Math.random() / 500 + .009) {
     let side = Math.floor(Math.random() * 3);
     let width = (.3 * 6) / (count ** 2);
@@ -220,6 +231,7 @@ function swordRain(count = Math.random() * 4 + 5, speed = Math.random() / 500 + 
         console.log("How'd that happen?");
     }
 }
+// Like swordRain, but each sword has individual speed
 function funkyRain(count = Math.random() * 4 + 5, speed = Math.random() / 100 + .005) {
     let side = Math.floor(Math.random() * 3);
     let width = .3 / count;
@@ -244,6 +256,7 @@ function funkyRain(count = Math.random() * 4 + 5, speed = Math.random() / 100 + 
         }
     }
 }
+// Summons hurt 
 function pealBall() {
     actorList.addActor(new Rock(Math.random()));
 }

@@ -7,6 +7,7 @@ let size;
 let shiftX;
 let shiftY;
 const backgroundColor = "#252525";
+// Max health and current health
 let mxHth = 15;
 let pHth = 15;
 //Draw ~ 30 times a second
@@ -34,6 +35,7 @@ function draw() {
     for (const actor of actorList.actors) {
         actor.update();
     }
+    // Temporary (?) Health Bar Stuff
     for (let i = 0; i < mxHth; i++) {
         if (i < pHth) {
             ctx.fillStyle = "#32a852";

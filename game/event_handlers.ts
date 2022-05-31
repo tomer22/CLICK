@@ -40,19 +40,19 @@ document.addEventListener("keydown", function(event: KeyboardEvent){
         circles%=4;
     }
      if (event.key === leftKey){
-        player.xVelocity = -5;
+        player.xVelocity = -5/(500);
         aDown = 1;
     }
     if (event.key === rightKey){
-        player.xVelocity = 5;
+        player.xVelocity = 5/(500);
         dDown = 1;
     }
     if (event.key === upKey){
-        player.yVelocity = -5;
+        player.yVelocity = -5/(500);
         wDown = 1;
     }
     if (event.key === downKey){
-        player.yVelocity = 5;
+        player.yVelocity = 5/(500);
         sDown = 1;
     }
 
@@ -68,7 +68,7 @@ document.addEventListener("keyup", function(event:KeyboardEvent){
     if (event.key === leftKey){
         aDown = 0;
         if (dDown){
-            player.xVelocity = 5;
+            player.xVelocity = 5/(500);
         }
         else{
             player.xVelocity = 0;
@@ -79,7 +79,7 @@ document.addEventListener("keyup", function(event:KeyboardEvent){
     if (event.key === rightKey){
         dDown = 0;
         if (aDown){
-            player.xVelocity = -5;
+            player.xVelocity = -5/(500);
         }
         else{
             player.xVelocity = 0;
@@ -88,7 +88,7 @@ document.addEventListener("keyup", function(event:KeyboardEvent){
     if (event.key === upKey){
         wDown = 0;
         if (sDown){
-            player.yVelocity = 5;
+            player.yVelocity = 5/(500);
         }
         else{
             player.yVelocity = 0;
@@ -97,7 +97,7 @@ document.addEventListener("keyup", function(event:KeyboardEvent){
     if (event.key === downKey){
         sDown = 0;
         if (wDown){
-            player.yVelocity = -5;
+            player.yVelocity = -5/(500);
         }
         else{
             player.yVelocity = 0;

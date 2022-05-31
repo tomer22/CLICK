@@ -34,16 +34,16 @@ class Player extends Actor {
         this.r = 1 / 30;
     }
     moveLeft() {
-        this.xVelocity = -5;
+        this.xVelocity = -5 / (500);
     }
     moveRight() {
-        this.xVelocity = 5;
+        this.xVelocity = 5 / (500);
     }
     moveUp() {
-        this.yVelocity = -5;
+        this.yVelocity = -5 / (500);
     }
     moveDown() {
-        this.yVelocity = 5;
+        this.yVelocity = 5 / (500);
     }
     draw() {
         //ctx.fillStyle = "blue";
@@ -62,8 +62,8 @@ class Player extends Actor {
         //console.log(this.x,this.y)
     }
     update() {
-        this.x += this.xVelocity / (500);
-        this.y += this.yVelocity / (500);
+        this.x += this.xVelocity;
+        this.y += this.yVelocity;
         // Tampering with collision to make it look nicer
         let wallShift = this.r;
         if (this.x > 1 - wallShift) {
@@ -79,6 +79,7 @@ class Player extends Actor {
             this.y = wallShift;
         }
     }
+    // When player is hit, if it is has not been recently hit, take damage
     onhit() {
         if (!this.iFrames) {
             pHth--;
@@ -104,6 +105,8 @@ class FallingCircle extends Actor {
         super(x, y); // calls the Actor's constructor
         this.color = color;
         this.r = 1 / 30;
+        // Lots of math, basically just generates circles in a ring around the center,
+        // staggered a bit so they don't all converge at one point
         this.ang = Math.random() * 2 * Math.PI;
         this.y = .5 + (.5 - y) * Math.sin(this.ang) + x * Math.cos(this.ang) / 2;
         this.x = .5 + (.5 - y) * Math.cos(this.ang) + x * Math.sin(this.ang) / 2;
@@ -117,6 +120,7 @@ class FallingCircle extends Actor {
         ctx.fill();
     }
     update() {
+        // Angular movement
         this.y -= this.speed * Math.sin(this.ang);
         this.x -= this.speed * Math.cos(this.ang);
         if ((this.y - .5) ** 2 + (this.x - .5) ** 2 > 3) {
@@ -140,6 +144,7 @@ class Rock extends FallingCircle {
         }
     }
 }
+// Rocks which follow a pattern
 class PatternRock extends Rock {
     constructor(lead = 0, f, dir = 1, x = 0, y = -.5) {
         super(x, y);
@@ -147,6 +152,7 @@ class PatternRock extends Rock {
         this.f = f;
         this.dir = dir;
         this.speed = this.dir / 100;
+        // Generate from one of 4 sides
         if (this.lead === 0 && this.speed > 0) {
             this.x = -.5;
         }
@@ -162,6 +168,7 @@ class PatternRock extends Rock {
     }
     //override
     update() {
+        // Either x -> y or y-> x
         if (this.lead == 0) {
             this.x += this.speed;
             this.y = this.f(this.x);
@@ -195,6 +202,7 @@ class Fruit extends FallingCircle {
         }
     }
 }
+// Basic rectangle actor (as the name suggests)
 class RectangleActor extends Actor {
     constructor(x, y, w, h) {
         super(x, y);
@@ -203,12 +211,14 @@ class RectangleActor extends Actor {
         this.h = h;
     }
     draw() {
+        // Rectangles x and y determine its center
         ctx.fillStyle = this.color;
         ctx.fillRect(shiftX + this.x * size - this.w * size / 2, shiftY + this.y * size - this.h * size / 2, this.w * size, this.h * size);
     }
     update() {
     }
     checkCol() {
+        // Nice circle rectangle collision algorithm I found from StackOverflow
         let distX = Math.abs(player.x - this.x);
         let distY = Math.abs(player.y - this.y);
         if (distX > (Math.abs(this.w) / 2 + player.r)) {
@@ -228,6 +238,7 @@ class RectangleActor extends Actor {
         return (crnrDist <= (player.r ^ 2));
     }
 }
+// Swords, wooo. Effectively just rectangles that move
 class Sword extends RectangleActor {
     constructor(x, y, w, h, xV, yV) {
         super(x, y, w, h);
@@ -235,6 +246,7 @@ class Sword extends RectangleActor {
         this.yV = yV;
     }
     update() {
+        // They literally just move
         this.x += this.xV;
         this.y += this.yV;
         if (this.checkCol()) {
@@ -242,6 +254,7 @@ class Sword extends RectangleActor {
         }
     }
 }
+// Fun one, slams out then retracts
 class evilWall extends RectangleActor {
     constructor(x, y, w, h, xV, yV) {
         super(x, y, w, h);
@@ -251,45 +264,41 @@ class evilWall extends RectangleActor {
         this.backSpeed = 1 / 2;
     }
     update() {
+        // Its center moves forward but its dimensions increase to make it seem like its just stretching
         if (this.state) {
             this.x += this.xV;
             this.w += this.xV * 2;
             this.y += this.yV;
             this.h += this.yV * 2;
-            // console.log(this.w)
-            // console.log(size)
+            // If its at its max, state = 0 and we start retraction process
             if (this.h > 1 && this.yV > 0) {
                 this.h = 1;
                 this.y = .5;
                 this.state = 0;
-                //     console.log("ah3")
             }
             if (this.h < -1 && this.yV < 0) {
                 this.h = -1;
                 this.y = .5;
                 this.state = 0;
-                //     console.log("ah3")
             }
             if (this.w > 1 && this.xV > 0) {
                 this.w = 1;
                 this.x = .5;
                 this.state = 0;
-                //       console.log("ahh2")
             }
             if (this.w < -1 && this.xV < 0) {
                 this.w = -1;
                 this.x = .5;
                 this.state = 0;
-                //       console.log("ahh2")
             }
-            //   console.log("ahh4")
         }
         else {
-            //console.log("ahh")
+            // The same thing as above, but in the other direction and slightly slower
             this.x -= this.xV * this.backSpeed;
             this.w -= this.xV * 2 * this.backSpeed;
             this.y -= this.yV * this.backSpeed;
             this.h -= this.yV * 2 * this.backSpeed;
+            // If it becomes too small, delete
             if (this.h < 0 && this.yV > 0) {
                 actorList.removeActor(this);
             }
@@ -308,23 +317,29 @@ class evilWall extends RectangleActor {
         }
     }
 }
+// Squares go boom
 class expandingSquare extends RectangleActor {
     constructor(x, y, growth, max, decay) {
         super(x, y, 0, 0);
+        // Start as warning color
         this.color = "#943140";
         this.growth = growth;
         this.max = max;
         this.decay = decay;
     }
     update() {
+        // Square grows
         if (this.w < this.max) {
             this.w += this.growth;
             this.h += this.growth;
         }
+        // Square is at max
         if (this.w >= this.max) {
+            // Becomes deadly
             this.color = "red";
             this.w = this.max;
             this.h = this.max;
+            // Decays over time, so it eventually disappears
             this.decay--;
             if (this.decay <= 0) {
                 actorList.removeActor(this);
@@ -335,6 +350,8 @@ class expandingSquare extends RectangleActor {
         }
     }
 }
+// Just a bunch stuff that was way too complicated just to draw a triangle that points a certain way and 
+// disappears a bit later
 class Warning extends Actor {
     constructor(x, y, b, h, dir, span) {
         super(x, y);
