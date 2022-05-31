@@ -170,11 +170,66 @@ class Rock extends FallingCircle {
     //overrides FallingCircle constructor
     constructor(x : number, y : number = -.5){
         super(x, y, "red");
+        
     }
 
     //override
     update() {
         super.update()
+        //check collision with player
+        if ( (this.x- player.x) ** 2 + (this.y - player.y) ** 2  < (this.r+player.r)**2/1.3){
+            //window.alert("You died from a rock!");
+            player.onhit()
+            //actorList.removeActor(this);
+        }
+
+    }
+}
+class PatternRock extends Rock {
+    //overrides FallingCircle constructor
+    lead :number;
+    f:Function;
+    dir : number;
+
+    constructor(  lead :number= 0,f:Function,dir=1,x : number=0, y : number = -.5,){
+        super(x, y);
+        
+        this.lead = lead;
+        this.f =f;
+        this.dir = dir
+        this.speed = this.dir/100
+        if (this.lead===0 && this.speed>0){
+            this.x = -.5;
+        }
+        else if (this.lead===0 && this.speed<0){
+            this.x = 1.5;
+        }
+        else if (this.lead===1 && this.speed>0){
+            this.y = -.5;
+        }
+        else if (this.lead===1 && this.speed<0){
+            this.y = 1.5;
+        }
+    }
+
+    //override
+    update() {
+        
+        
+        if (this.lead==0){
+            this.x += this.speed
+            this.y = this.f(this.x);
+        }
+        if (this.lead==1){
+            this.y += this.speed
+            this.x = this.f(this.y);
+        }
+        
+        
+        if ((this.y-.5)**2+(this.x-.5)**2> 3){
+            actorList.removeActor(this);
+        }
+        
         //check collision with player
         if ( (this.x- player.x) ** 2 + (this.y - player.y) ** 2  < (this.r+player.r)**2/1.3){
             //window.alert("You died from a rock!");
