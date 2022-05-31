@@ -129,10 +129,13 @@ document.addEventListener("keyup", function(event:KeyboardEvent){
     
 // }, 700)
 
+// Draw healing ball
 function healBall() {
     actorList.addActor( new Fruit(Math.random()))
 }
 
+
+// Draw harmful balls in an interval
 setInterval( function() {
     if (circles==1){
         pealBall();
@@ -140,11 +143,15 @@ setInterval( function() {
     }
 }, 150)
 
+
+// Changes the attack every 5 secs
 setInterval(function() {
     circles++;
     circles%=5;
 }, 5000)
 
+
+// Summon swords from some direction every so often
 
 setInterval( function() {
     if (!circles){
@@ -153,6 +160,10 @@ setInterval( function() {
     }
     
 }, 1200)
+
+
+// Create telegraph for attack, then do said wall attack after some time in a random spot
+
 setInterval( function() {
     if (circles==2){
         let side = Math.floor(Math.random()*4);
@@ -163,13 +174,21 @@ setInterval( function() {
         setTimeout(function(){slam(side,count,spot);},delay)
     }
 }, 500)
+
+
+// Squares appear in ground
+
 setInterval( function() {
     if (circles==3){
         mettaton();
-        //funkyRain();
+        
     }
     
 }, 250)
+
+
+// Currently the sin graph
+
 setInterval( function() {
     if (circles==4){
         patternCircles(0,sign);
@@ -180,7 +199,7 @@ setInterval( function() {
 }, 100)
 
 
-
+// Pattern circles accepts a function which dictates x -> y
 function patternCircles(lead:number,f:Function) {
     actorList.addActor( new PatternRock(lead,f));
 };
@@ -189,12 +208,16 @@ function sign(x:number){
     return (spot+1)/2
 }
 
+// Creates expanding squares in a random spot
 function mettaton(){
     let count = 5;
     let hex = Math.floor(Math.random()*count)
     let hi = Math.floor(Math.random()*count)
     actorList.addActor(new expandingSquare((hex+.5)/count,(hi+.5)/count,.01,1/count,50));
 }
+
+
+// Creates a set of triangles pointing in certain directions for telegraphing
 function slamWarning(side:number,count:number,spot:number,delay:number){
     let b = 1/(count*2)
     let h = .5/(count*2)
@@ -218,6 +241,8 @@ function slamWarning(side:number,count:number,spot:number,delay:number){
 }
 }
 
+
+// Creates the evil wall which slams, then retracts
 function slam(side:number,count:number,spot:number){
     
     let speed = .06
@@ -235,6 +260,9 @@ function slam(side:number,count:number,spot:number){
     }
 
 }
+
+
+// summons swords from one of three directions
 function swordRain(count:number = Math.random()*4+5,speed:number= Math.random()/500+.009) {
 
     let side = Math.floor(Math.random()*3);
@@ -269,6 +297,8 @@ function swordRain(count:number = Math.random()*4+5,speed:number= Math.random()/
     }
 }
 
+
+// Like swordRain, but each sword has individual speed
 function funkyRain(count:number = Math.random()*4+5,speed:number= Math.random()/100+.005) {
 
     let side = Math.floor(Math.random()*3);
@@ -300,6 +330,8 @@ function funkyRain(count:number = Math.random()*4+5,speed:number= Math.random()/
     }
 }
 
+
+// Summons hurt 
 function pealBall() {
     actorList.addActor( new Rock(Math.random()))
 }
