@@ -123,11 +123,11 @@ document.addEventListener("keyup", function(event:KeyboardEvent){
 // let lastMousePosition = {x: 0, y:0};
 // let keysStatus = {leftKeyDown: false, rightKeyDown: false};
 
-setInterval( function() {
-    if (circles==1){
-        healBall();}
+// setInterval( function() {
+//     if (circles==1){
+//         healBall();}
     
-}, 700)
+// }, 700)
 
 function healBall() {
     actorList.addActor( new Fruit(Math.random()))
@@ -136,8 +136,14 @@ function healBall() {
 setInterval( function() {
     if (circles==1){
         pealBall();
+        //patternCircles(0,sign);
     }
 }, 150)
+
+setInterval(function() {
+    circles++;
+    circles%=5;
+}, 5000)
 
 
 setInterval( function() {
@@ -146,7 +152,7 @@ setInterval( function() {
         //funkyRain();
     }
     
-}, 2100)
+}, 1200)
 setInterval( function() {
     if (circles==2){
         let side = Math.floor(Math.random()*4);
@@ -164,6 +170,25 @@ setInterval( function() {
     }
     
 }, 250)
+setInterval( function() {
+    if (circles==4){
+        patternCircles(0,sign);
+        
+        //funkyRain();
+    }
+    
+}, 100)
+
+
+
+function patternCircles(lead:number,f:Function) {
+    actorList.addActor( new PatternRock(lead,f));
+};
+function sign(x:number){
+    let spot = Math.sin(x*3*Math.PI)
+    return (spot+1)/2
+}
+
 function mettaton(){
     let count = 5;
     let hex = Math.floor(Math.random()*count)
@@ -221,7 +246,7 @@ function swordRain(count:number = Math.random()*4+5,speed:number= Math.random()/
         for (let i=0;i<count;i++){
             
             // actorList.addActor(new Sword((i+Math.random()*.5+.25)/count,-1,width,.2,0,Math.random()/100+.005))
-            actorList.addActor(new Sword((i+Math.random()*.5+.25)/(count+.5),-1,width,.2,0,speed))
+            actorList.addActor(new Sword((i+Math.random()*.5+.25)/(count+.5),-.2,width,.2,0,speed))
         }
     }
     else if (side===1){
@@ -229,14 +254,14 @@ function swordRain(count:number = Math.random()*4+5,speed:number= Math.random()/
             
             
             // actorList.addActor(new Sword(-1,(i+Math.random()*.5+.25)/count,.2,width,Math.random()/100+.005,0))
-            actorList.addActor(new Sword(-1,(i+Math.random()*.5+.25)/(count+.5),.2,width,speed,0))
+            actorList.addActor(new Sword(-.2,(i+Math.random()*.5+.25)/(count+.5),.2,width,speed,0))
         }
     }
     else if (side===2){
         for (let i=0;i<count;i++){
             
             // actorList.addActor(new Sword(2,(i+Math.random()*.5+.25)/count,.2,width,-(Math.random()/100+.005),0))
-            actorList.addActor(new Sword(2,(i+Math.random()*.5+.25)/(count+.5),.2,width,-speed,0))
+            actorList.addActor(new Sword(1.2,(i+Math.random()*.5+.25)/(count+.5),.2,width,-speed,0))
         }
     }
     else{
