@@ -5,7 +5,7 @@ const upKey = "w";
 const leftKey = "a";
 const downKey = "s";
 const rightKey = "d";
-let circles = 2;
+let circles = 1;
 // Didn't want a down down variable, so I stuck with the letters
 let wDown = 0;
 let aDown = 0;
@@ -118,7 +118,7 @@ setInterval(function () {
 }, 150);
 // Changes the attack every 5 secs
 setInterval(function () {
-    //circles++;
+    circles++;
     circles %= 5;
 }, 5000);
 // Summon swords from some direction every so often
