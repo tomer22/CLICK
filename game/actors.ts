@@ -126,6 +126,7 @@ class Player extends Actor {
         }
     }
 
+        
 
 }
 
@@ -180,9 +181,7 @@ class Rock extends FallingCircle {
             player.onhit()
             //actorList.removeActor(this);
         }
-        //     actorList.removeActor(this);
-        //     //
-        // }
+
     }
 }
 
