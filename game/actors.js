@@ -1,7 +1,21 @@
-"use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 // Define the properties/ behavior of Actor 
-class Actor {
-    constructor(x, y) {
+var Actor = /** @class */ (function () {
+    function Actor(x, y) {
         //set up properties
         this.x = x;
         this.y = y;
@@ -9,43 +23,46 @@ class Actor {
     /**
      * Draw the actor on the canvas.
      */
-    draw() {
+    Actor.prototype.draw = function () {
         // Use ctx to draw. A sample (drawing a small circle):
-    }
+    };
     /**
      * Update this actor for the next frame.
      */
-    update() {
+    Actor.prototype.update = function () {
         // Update properties or other Actors in the actorList.
-    }
-}
+    };
+    return Actor;
+}());
 // Recommended: Create sub-classes of Actor:
 // class SubActor extends Actor { ... }
-class Player extends Actor {
+var Player = /** @class */ (function (_super) {
+    __extends(Player, _super);
     //override
-    constructor(x, y) {
-        super(x, y);
-        this.iFrames = 0;
-        this.iTime = 60;
-        this.color = "#1451e0";
-        this.iColor = "#587acc";
-        this.xVelocity = 0;
-        this.yVelocity = 0;
-        this.r = 1 / 30;
+    function Player(x, y) {
+        var _this = _super.call(this, x, y) || this;
+        _this.iFrames = 0;
+        _this.iTime = 60;
+        _this.color = "#1451e0";
+        _this.iColor = "#587acc";
+        _this.xVelocity = 0;
+        _this.yVelocity = 0;
+        _this.r = 1 / 30;
+        return _this;
     }
-    moveLeft() {
+    Player.prototype.moveLeft = function () {
         this.xVelocity = -5 / (500);
-    }
-    moveRight() {
+    };
+    Player.prototype.moveRight = function () {
         this.xVelocity = 5 / (500);
-    }
-    moveUp() {
+    };
+    Player.prototype.moveUp = function () {
         this.yVelocity = -5 / (500);
-    }
-    moveDown() {
+    };
+    Player.prototype.moveDown = function () {
         this.yVelocity = 5 / (500);
-    }
-    draw() {
+    };
+    Player.prototype.draw = function () {
         //ctx.fillStyle = "blue";
         //ctx.fillRect(this.x - 10, this.y - 10, 20, 20);
         ctx.fillStyle = this.color;
@@ -60,12 +77,12 @@ class Player extends Actor {
         ctx.closePath();
         ctx.fill();
         //console.log(this.x,this.y)
-    }
-    update() {
+    };
+    Player.prototype.update = function () {
         this.x += this.xVelocity;
         this.y += this.yVelocity;
         // Tampering with collision to make it look nicer
-        let wallShift = this.r;
+        var wallShift = this.r;
         if (this.x > 1 - wallShift) {
             this.x = 1 - wallShift;
         }
@@ -78,9 +95,9 @@ class Player extends Actor {
         if (this.y < wallShift) {
             this.y = wallShift;
         }
-    }
+    };
     // When player is hit, if it is has not been recently hit, take damage
-    onhit() {
+    Player.prototype.onhit = function () {
         if (!this.iFrames) {
             pHth--;
             if (pHth <= 0) {
@@ -91,83 +108,96 @@ class Player extends Actor {
             }
             this.iFrames = this.iTime;
         }
-    }
-    onheal() {
+    };
+    Player.prototype.onheal = function () {
         pHth++;
         if (pHth > mxHth) {
             pHth = mxHth;
         }
-    }
-}
-class FallingCircle extends Actor {
+    };
+    return Player;
+}(Actor));
+var FallingCircle = /** @class */ (function (_super) {
+    __extends(FallingCircle, _super);
     //override Actor's constructor
-    constructor(x, y, color) {
-        super(x, y); // calls the Actor's constructor
-        this.color = color;
-        this.r = 1 / 30;
+    function FallingCircle(x, y, color) {
+        var _this = _super.call(this, x, y) || this;
+        _this.color = color;
+        _this.r = 1 / 30;
         // Lots of math, basically just generates circles in a ring around the center,
         // staggered a bit so they don't all converge at one point
-        this.ang = Math.random() * 2 * Math.PI;
-        this.y = .5 + (.5 - y) * Math.sin(this.ang) + x * Math.cos(this.ang) / 2;
-        this.x = .5 + (.5 - y) * Math.cos(this.ang) + x * Math.sin(this.ang) / 2;
-        this.speed = Math.random() / 100 + .005;
+        _this.ang = Math.random() * 2 * Math.PI;
+        _this.y = .5 + (.5 - y) * Math.sin(_this.ang) + x * Math.cos(_this.ang) / 2;
+        _this.x = .5 + (.5 - y) * Math.cos(_this.ang) + x * Math.sin(_this.ang) / 2;
+        _this.speed = Math.random() / 100 + .005;
+        return _this;
     }
-    draw() {
+    FallingCircle.prototype.draw = function () {
         ctx.fillStyle = this.color;
         ctx.beginPath();
         ctx.arc(shiftX + this.x * size, shiftY + this.y * size, size * this.r, 0, Math.PI * 2);
         ctx.closePath();
         ctx.fill();
-    }
-    update() {
+    };
+    FallingCircle.prototype.update = function () {
         // Angular movement
         this.y -= this.speed * Math.sin(this.ang);
         this.x -= this.speed * Math.cos(this.ang);
-        if ((this.y - .5) ** 2 + (this.x - .5) ** 2 > 3) {
+        if (Math.pow((this.y - .5), 2) + Math.pow((this.x - .5), 2) > 3) {
             actorList.removeActor(this);
         }
-    }
-}
-class Rock extends FallingCircle {
+    };
+    return FallingCircle;
+}(Actor));
+var Rock = /** @class */ (function (_super) {
+    __extends(Rock, _super);
     //overrides FallingCircle constructor
-    constructor(x, y = -.5) {
-        super(x, y, "red");
+    function Rock(x, y) {
+        if (y === void 0) { y = -.5; }
+        return _super.call(this, x, y, "red") || this;
     }
     //override
-    update() {
-        super.update();
+    Rock.prototype.update = function () {
+        _super.prototype.update.call(this);
         //check collision with player
-        if ((this.x - player.x) ** 2 + (this.y - player.y) ** 2 < (this.r + player.r) ** 2 / 1.3) {
+        if (Math.pow((this.x - player.x), 2) + Math.pow((this.y - player.y), 2) < Math.pow((this.r + player.r), 2) / 3) {
             //window.alert("You died from a rock!");
             player.onhit();
             //actorList.removeActor(this);
         }
-    }
-}
+    };
+    return Rock;
+}(FallingCircle));
 // Rocks which follow a pattern
-class PatternRock extends Rock {
-    constructor(lead = 0, f, dir = 1, x = 0, y = -.5) {
-        super(x, y);
-        this.lead = lead;
-        this.f = f;
-        this.dir = dir;
-        this.speed = this.dir / 100;
+var PatternRock = /** @class */ (function (_super) {
+    __extends(PatternRock, _super);
+    function PatternRock(lead, f, dir, x, y) {
+        if (lead === void 0) { lead = 0; }
+        if (dir === void 0) { dir = 1; }
+        if (x === void 0) { x = 0; }
+        if (y === void 0) { y = -.5; }
+        var _this = _super.call(this, x, y) || this;
+        _this.lead = lead;
+        _this.f = f;
+        _this.dir = dir;
+        _this.speed = _this.dir / 100;
         // Generate from one of 4 sides
-        if (this.lead === 0 && this.speed > 0) {
-            this.x = -.5;
+        if (_this.lead === 0 && _this.speed > 0) {
+            _this.x = -.5;
         }
-        else if (this.lead === 0 && this.speed < 0) {
-            this.x = 1.5;
+        else if (_this.lead === 0 && _this.speed < 0) {
+            _this.x = 1.5;
         }
-        else if (this.lead === 1 && this.speed > 0) {
-            this.y = -.5;
+        else if (_this.lead === 1 && _this.speed > 0) {
+            _this.y = -.5;
         }
-        else if (this.lead === 1 && this.speed < 0) {
-            this.y = 1.5;
+        else if (_this.lead === 1 && _this.speed < 0) {
+            _this.y = 1.5;
         }
+        return _this;
     }
     //override
-    update() {
+    PatternRock.prototype.update = function () {
         // Either x -> y or y-> x
         if (this.lead == 0) {
             this.x += this.speed;
@@ -177,50 +207,56 @@ class PatternRock extends Rock {
             this.y += this.speed;
             this.x = this.f(this.y);
         }
-        if ((this.y - .5) ** 2 + (this.x - .5) ** 2 > 3) {
+        if (Math.pow((this.y - .5), 2) + Math.pow((this.x - .5), 2) > 3) {
             actorList.removeActor(this);
         }
         //check collision with player
-        if ((this.x - player.x) ** 2 + (this.y - player.y) ** 2 < (this.r + player.r) ** 2 / 1.3) {
+        if (Math.pow((this.x - player.x), 2) + Math.pow((this.y - player.y), 2) < Math.pow((this.r + player.r), 2) / 3) {
             //window.alert("You died from a rock!");
             player.onhit();
             //actorList.removeActor(this);
         }
-    }
-}
-class Fruit extends FallingCircle {
-    constructor(x, y = -.5) {
-        super(x, y, "green");
+    };
+    return PatternRock;
+}(Rock));
+var Fruit = /** @class */ (function (_super) {
+    __extends(Fruit, _super);
+    function Fruit(x, y) {
+        if (y === void 0) { y = -.5; }
+        return _super.call(this, x, y, "green") || this;
     }
     //override
-    update() {
-        super.update();
+    Fruit.prototype.update = function () {
+        _super.prototype.update.call(this);
         //check collision with player
-        if ((this.x - player.x) ** 2 + (this.y - player.y) ** 2 < (this.r + player.r) ** 2 / 1.3) {
+        if (Math.pow((this.x - player.x), 2) + Math.pow((this.y - player.y), 2) < Math.pow((this.r + player.r), 2) / 3) {
             actorList.removeActor(this);
             player.onheal();
         }
-    }
-}
+    };
+    return Fruit;
+}(FallingCircle));
 // Basic rectangle actor (as the name suggests)
-class RectangleActor extends Actor {
-    constructor(x, y, w, h) {
-        super(x, y);
-        this.color = "red";
-        this.w = w;
-        this.h = h;
+var RectangleActor = /** @class */ (function (_super) {
+    __extends(RectangleActor, _super);
+    function RectangleActor(x, y, w, h) {
+        var _this = _super.call(this, x, y) || this;
+        _this.color = "red";
+        _this.w = w;
+        _this.h = h;
+        return _this;
     }
-    draw() {
+    RectangleActor.prototype.draw = function () {
         // Rectangles x and y determine its center
         ctx.fillStyle = this.color;
         ctx.fillRect(shiftX + this.x * size - this.w * size / 2, shiftY + this.y * size - this.h * size / 2, this.w * size, this.h * size);
-    }
-    update() {
-    }
-    checkCol() {
+    };
+    RectangleActor.prototype.update = function () {
+    };
+    RectangleActor.prototype.checkCol = function () {
         // Nice circle rectangle collision algorithm I found from StackOverflow
-        let distX = Math.abs(player.x - this.x);
-        let distY = Math.abs(player.y - this.y);
+        var distX = Math.abs(player.x - this.x);
+        var distY = Math.abs(player.y - this.y);
         if (distX > (Math.abs(this.w) / 2 + player.r)) {
             return false;
         }
@@ -233,37 +269,43 @@ class RectangleActor extends Actor {
         if (distY <= (Math.abs(this.h) / 2)) {
             return true;
         }
-        let crnrDist = (player.x - Math.abs(this.w) / 2) ^ 2 +
+        var crnrDist = (player.x - Math.abs(this.w) / 2) ^ 2 +
             (player.y - Math.abs(this.h) / 2) ^ 2;
         return (crnrDist <= (player.r ^ 2));
-    }
-}
+    };
+    return RectangleActor;
+}(Actor));
 // Swords, wooo. Effectively just rectangles that move
-class Sword extends RectangleActor {
-    constructor(x, y, w, h, xV, yV) {
-        super(x, y, w, h);
-        this.xV = xV;
-        this.yV = yV;
+var Sword = /** @class */ (function (_super) {
+    __extends(Sword, _super);
+    function Sword(x, y, w, h, xV, yV) {
+        var _this = _super.call(this, x, y, w, h) || this;
+        _this.xV = xV;
+        _this.yV = yV;
+        return _this;
     }
-    update() {
+    Sword.prototype.update = function () {
         // They literally just move
         this.x += this.xV;
         this.y += this.yV;
         if (this.checkCol()) {
             player.onhit();
         }
-    }
-}
+    };
+    return Sword;
+}(RectangleActor));
 // Fun one, slams out then retracts
-class evilWall extends RectangleActor {
-    constructor(x, y, w, h, xV, yV) {
-        super(x, y, w, h);
-        this.xV = xV;
-        this.yV = yV;
-        this.state = 1;
-        this.backSpeed = 1 / 2;
+var evilWall = /** @class */ (function (_super) {
+    __extends(evilWall, _super);
+    function evilWall(x, y, w, h, xV, yV) {
+        var _this = _super.call(this, x, y, w, h) || this;
+        _this.xV = xV;
+        _this.yV = yV;
+        _this.state = 1;
+        _this.backSpeed = 1 / 2;
+        return _this;
     }
-    update() {
+    evilWall.prototype.update = function () {
         // Its center moves forward but its dimensions increase to make it seem like its just stretching
         if (this.state) {
             this.x += this.xV;
@@ -315,19 +357,22 @@ class evilWall extends RectangleActor {
         if (this.checkCol()) {
             player.onhit();
         }
-    }
-}
+    };
+    return evilWall;
+}(RectangleActor));
 // Squares go boom
-class expandingSquare extends RectangleActor {
-    constructor(x, y, growth, max, decay) {
-        super(x, y, 0, 0);
+var expandingSquare = /** @class */ (function (_super) {
+    __extends(expandingSquare, _super);
+    function expandingSquare(x, y, growth, max, decay) {
+        var _this = _super.call(this, x, y, 0, 0) || this;
         // Start as warning color
-        this.color = "#943140";
-        this.growth = growth;
-        this.max = max;
-        this.decay = decay;
+        _this.color = "#943140";
+        _this.growth = growth;
+        _this.max = max;
+        _this.decay = decay;
+        return _this;
     }
-    update() {
+    expandingSquare.prototype.update = function () {
         // Square grows
         if (this.w < this.max) {
             this.w += this.growth;
@@ -348,19 +393,22 @@ class expandingSquare extends RectangleActor {
                 player.onhit();
             }
         }
-    }
-}
+    };
+    return expandingSquare;
+}(RectangleActor));
 // Just a bunch stuff that was way too complicated just to draw a triangle that points a certain way and 
 // disappears a bit later
-class Warning extends Actor {
-    constructor(x, y, b, h, dir, span) {
-        super(x, y);
-        this.span = span;
-        this.h = h;
-        this.b = b;
-        this.dir = dir;
+var Warning = /** @class */ (function (_super) {
+    __extends(Warning, _super);
+    function Warning(x, y, b, h, dir, span) {
+        var _this = _super.call(this, x, y) || this;
+        _this.span = span;
+        _this.h = h;
+        _this.b = b;
+        _this.dir = dir;
+        return _this;
     }
-    draw() {
+    Warning.prototype.draw = function () {
         ctx.fillStyle = "#943140";
         ctx.beginPath();
         ctx.moveTo(shiftX + size * this.x, shiftY + size * this.y);
@@ -387,34 +435,39 @@ class Warning extends Actor {
         if (this.span <= 0) {
             actorList.removeActor(this);
         }
-    }
-}
+    };
+    return Warning;
+}(Actor));
 //class Flower extends Actor {
-class Flower extends Actor {
-    constructor(x, y, r) {
+var Flower = /** @class */ (function (_super) {
+    __extends(Flower, _super);
+    function Flower(x, y, r) {
+        var _this = 
         //set up properties
-        super(x, y);
-        this.r = r;
-        this.state = Math.floor(Math.random() * 1000);
-        this.color = "gray";
-        this.speedX = (Math.random() * 5 + 1) * (2 * Math.floor(2 * Math.random()) - 1);
-        this.speedY = (Math.random() * 5 + 1) * (2 * Math.floor(2 * Math.random()) - 1);
-        this.rotate = 0;
-        this.speedR = (2 * Math.floor(2 * Math.random()) - 1) * (Math.random() / 6 + .1);
+        _super.call(this, x, y) || this;
+        _this.r = r;
+        _this.state = Math.floor(Math.random() * 1000);
+        _this.color = "gray";
+        _this.speedX = (Math.random() * 5 + 1) * (2 * Math.floor(2 * Math.random()) - 1);
+        _this.speedY = (Math.random() * 5 + 1) * (2 * Math.floor(2 * Math.random()) - 1);
+        _this.rotate = 0;
+        _this.speedR = (2 * Math.floor(2 * Math.random()) - 1) * (Math.random() / 6 + .1);
+        return _this;
     }
-    draw() {
+    Flower.prototype.draw = function () {
         ctx.strokeStyle = this.color;
         ctx.beginPath();
-        for (let i = 0; i < 2 * Math.PI * 10; i += .1)
+        for (var i = 0; i < 2 * Math.PI * 10; i += .1)
             ctx.arc(this.x, this.y, Math.abs(Math.cos((i + this.rotate) * 1.25) * Math.sin((i + this.rotate) * 1.25)) * this.r * 2, i, i + .1);
         ctx.stroke();
         //ctx.arc(this.x,this.y,this.r, 0 , Math.PI * 2);
         ctx.closePath();
-    }
-    update() {
+    };
+    Flower.prototype.update = function () {
         // Update properties or other Actors in the actorList.
         this.rotate += this.speedR;
         this.x += this.speedX;
         this.y += this.speedY;
-    }
-}
+    };
+    return Flower;
+}(Actor));

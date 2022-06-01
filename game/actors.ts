@@ -182,7 +182,7 @@ class Rock extends FallingCircle {
     update() {
         super.update()
         //check collision with player
-        if ( (this.x- player.x) ** 2 + (this.y - player.y) ** 2  < (this.r+player.r)**2/1.3){
+        if ( (this.x- player.x) ** 2 + (this.y - player.y) ** 2  < (this.r+player.r)**2){
             //window.alert("You died from a rock!");
             player.onhit()
             //actorList.removeActor(this);
@@ -241,7 +241,7 @@ class PatternRock extends Rock {
         }
         
         //check collision with player
-        if ( (this.x- player.x) ** 2 + (this.y - player.y) ** 2  < (this.r+player.r)**2/1.3){
+        if ( (this.x- player.x) ** 2 + (this.y - player.y) ** 2  < (this.r+player.r)**2){
             //window.alert("You died from a rock!");
             player.onhit()
             //actorList.removeActor(this);
@@ -259,7 +259,7 @@ class Fruit extends FallingCircle {
     update() {
         super.update()
         //check collision with player
-        if ( (this.x- player.x) ** 2 + (this.y - player.y) ** 2  < (this.r+player.r)**2/1.3){
+        if ( (this.x- player.x) ** 2 + (this.y - player.y) ** 2  < (this.r+player.r)**2){
             actorList.removeActor(this);
             player.onheal();
         }
