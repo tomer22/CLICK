@@ -27,21 +27,21 @@ canvas.addEventListener("click", function (event) {
 document.addEventListener("keydown", function (event) {
     if (event.key === "p") {
         circles++;
-        circles %= 4;
+        circles %= 6;
     }
-    if (event.key === leftKey) {
+    if (event.key === leftKey || event.key === "ArrowLeft") {
         player.xVelocity = -5 / (500);
         aDown = 1;
     }
-    if (event.key === rightKey) {
+    if (event.key === rightKey || event.key === "ArrowRight") {
         player.xVelocity = 5 / (500);
         dDown = 1;
     }
-    if (event.key === upKey) {
+    if (event.key === upKey || event.key === "ArrowUp") {
         player.yVelocity = -5 / (500);
         wDown = 1;
     }
-    if (event.key === downKey) {
+    if (event.key === downKey || event.key === "ArrowDown") {
         player.yVelocity = 5 / (500);
         sDown = 1;
     }
@@ -53,7 +53,7 @@ document.addEventListener("keyup", function (event) {
     //     player.xVelocity = 0;
     // if (event.key === "ArrowUp" || event.key === "ArrowDown")
     //     player.yVelocity = 0;
-    if (event.key === leftKey) {
+    if (event.key === leftKey || event.key === "ArrowLeft") {
         aDown = 0;
         if (dDown) {
             player.xVelocity = 5 / (500);
@@ -62,7 +62,7 @@ document.addEventListener("keyup", function (event) {
             player.xVelocity = 0;
         }
     }
-    if (event.key === rightKey) {
+    if (event.key === rightKey || event.key === "ArrowRight") {
         dDown = 0;
         if (aDown) {
             player.xVelocity = -5 / (500);
@@ -71,7 +71,7 @@ document.addEventListener("keyup", function (event) {
             player.xVelocity = 0;
         }
     }
-    if (event.key === upKey) {
+    if (event.key === upKey || event.key === "ArrowUp") {
         wDown = 0;
         if (sDown) {
             player.yVelocity = 5 / (500);
@@ -80,7 +80,7 @@ document.addEventListener("keyup", function (event) {
             player.yVelocity = 0;
         }
     }
-    if (event.key === downKey) {
+    if (event.key === downKey || event.key === "ArrowDown") {
         sDown = 0;
         if (wDown) {
             player.yVelocity = -5 / (500);
@@ -119,7 +119,7 @@ setInterval(function () {
 // Changes the attack every 5 secs
 setInterval(function () {
     circles++;
-    circles %= 5;
+    circles %= 6;
 }, 5000);
 // Summon swords from some direction every so often
 setInterval(function () {
@@ -132,13 +132,13 @@ setInterval(function () {
 setInterval(function () {
     if (circles == 2) {
         let side = Math.floor(Math.random() * 4);
-        let count = 5;
+        let count = 8;
         let spot = Math.floor(Math.random() * count);
-        let delay = 1000;
+        let delay = 800;
         slamWarning(side, count, spot, delay);
         setTimeout(function () { slam(side, count, spot); }, delay);
     }
-}, 500);
+}, 200);
 // Squares appear in ground
 setInterval(function () {
     if (circles == 3) {
@@ -152,6 +152,21 @@ setInterval(function () {
         //funkyRain();
     }
 }, 100);
+setInterval(function () {
+    if (circles === 5) {
+        bombs();
+        bombz();
+        //funkyRain();
+    }
+}, 1000);
+function bombs() {
+    actorList.addActor(new LaserBomb(Math.random() * .8 + .1, Math.random() * .8 + .1, 90));
+}
+;
+function bombz() {
+    actorList.addActor(new CircleBomb(Math.random() * .8 + .1, Math.random() * .8 + .1, 90));
+}
+;
 // Pattern circles accepts a function which dictates x -> y
 function patternCircles(lead, f) {
     actorList.addActor(new PatternRock(lead, f));

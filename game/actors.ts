@@ -1,5 +1,8 @@
 
-
+function rc():string{
+    return `rgba(${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)},${.5})`;
+   
+}
 // Define the properties/ behavior of Actor 
 class Actor {
     
@@ -158,7 +161,9 @@ class FallingCircle extends Actor {
         ctx.arc(shiftX+this.x*size, shiftY+this.y*size, size*this.r, 0 , Math.PI * 2);
         ctx.closePath();
         ctx.fill();
+        
     }
+    
 
     update() : void {
         // Angular movement
@@ -182,7 +187,7 @@ class Rock extends FallingCircle {
     update() {
         super.update()
         //check collision with player
-        if ( (this.x- player.x) ** 2 + (this.y - player.y) ** 2  < (this.r+player.r)**2/1.3){
+        if ( (this.x- player.x) ** 2 + (this.y - player.y) ** 2  < (this.r+player.r)**2){
             //window.alert("You died from a rock!");
             player.onhit()
             //actorList.removeActor(this);
@@ -191,6 +196,18 @@ class Rock extends FallingCircle {
     }
 }
 
+class SharpRock extends Rock{
+    constructor(x : number, y : number,angle:number) {
+        super(x, y ); // calls the Actor's constructor
+        // Lots of math, basically just generates circles in a ring around the center,
+        // staggered a bit so they don't all converge at one point
+        this.ang = angle;
+        this.y = y
+        this.x = x
+        this.speed = 1/100;
+
+    }
+}
 
 // Rocks which follow a pattern
 class PatternRock extends Rock {
@@ -241,7 +258,7 @@ class PatternRock extends Rock {
         }
         
         //check collision with player
-        if ( (this.x- player.x) ** 2 + (this.y - player.y) ** 2  < (this.r+player.r)**2/1.3){
+        if ( (this.x- player.x) ** 2 + (this.y - player.y) ** 2  < (this.r+player.r)**2){
             //window.alert("You died from a rock!");
             player.onhit()
             //actorList.removeActor(this);
@@ -259,13 +276,111 @@ class Fruit extends FallingCircle {
     update() {
         super.update()
         //check collision with player
-        if ( (this.x- player.x) ** 2 + (this.y - player.y) ** 2  < (this.r+player.r)**2/1.3){
+        if ( (this.x- player.x) ** 2 + (this.y - player.y) ** 2  < (this.r+player.r)**2){
             actorList.removeActor(this);
             player.onheal();
         }
     }
 }
+class Bomb extends Rock {
 
+    decay:number;
+    stDecay:number;
+    //boomColor:string;
+    nextBeep:number;
+    constructor(x : number, y : number,decay:number){
+        super(x,y);
+        this.x = x;
+        this.y =y;
+        this.decay = decay;
+        this.stDecay = decay;
+        this.color = `rgba(255,0,0,${1-this.decay/this.stDecay})`;
+        // this.boomColor = "#eb7f86"
+        this.nextBeep = Math.floor(decay/10)
+        this.r *= 1.5
+        this.speed = 0;
+    
+    }
+    update(){
+        
+        this.decay--;
+        this.nextBeep--;
+        this.color = `rgba(255,0,0,${1-this.decay/this.stDecay})`;
+        if (this.decay/this.stDecay <= .8){
+            if ( (this.x- player.x) ** 2 + (this.y - player.y) ** 2  < (this.r+player.r)**2){
+                //window.alert("You died from a rock!");
+                player.onhit()
+                //actorList.removeActor(this);
+            }
+        }
+        // if (this.nextBeep <=Math.min(5,this.decay/20) ){
+        //     this.nextBeep = Math.floor(this.decay/10)
+        //     this.color = "#eb7f86"
+        // }
+        // else{
+        //     this.color = "red";
+        // }
+        if (this.decay<=50){
+            this.onBoom()
+            console.log(this.x,this.y)
+            actorList.removeActor(this);
+        }
+    }
+    onBoom(){
+
+    }
+    
+}
+class LaserBomb extends Bomb {
+    
+    draw(): void {
+        super.draw()
+        let s1 = this.r
+        let s2 = this.r/4 
+        ctx.fillStyle = "#252525";
+        ctx.fillRect(shiftX+this.x*size-s1*size/2,shiftY+this.y*size-s2*size/2,s1*size,s2*size );
+        ctx.fillRect(shiftX+this.x*size-s2*size/2,shiftY+this.y*size-s1*size/2,s2*size,s1*size );
+
+
+    }
+    onBoom(): void {
+        actorList.addActor(new Laser(.5,this.y,1,2*this.r,20))
+        actorList.addActor(new Laser(this.x,.5,2*this.r,1,20))
+    }
+    
+}
+
+class CircleBomb extends Bomb {
+    count:number;
+    constructor(x : number, y : number,decay:number, count =Math.floor(Math.random()*6)+3){
+        super(x,y,decay);
+        this.count = count;
+       
+    
+    }
+    draw(): void {
+        super.draw()
+        let sr = this.r/this.count
+        ctx.fillStyle = "#252525";
+        for (let i=0; i<this.count;i++){
+            ctx.beginPath();
+            ctx.arc(shiftX+this.x*size+size*this.r*(Math.sin(i*2*Math.PI/this.count))/2, shiftY+this.y*size+size*this.r*(Math.cos(i*2*Math.PI/this.count))/2, size*sr, 0 , Math.PI * 2);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+
+    }
+    onBoom(): void {
+        
+        for (let i=0;i<this.count;i++){
+            actorList.addActor(new SharpRock(this.x,this.y,-Math.PI/2+i*2*Math.PI/this.count))
+        }
+    }
+    pattern(): void {
+        
+    }
+}
 // Basic rectangle actor (as the name suggests)
 class RectangleActor extends Actor{
     w : number;
@@ -302,6 +417,24 @@ class RectangleActor extends Actor{
         return (crnrDist <= (player.r^2));
     }
 }
+class DecayRect extends RectangleActor{
+    decay:number;
+    constructor(x : number, y : number, w:number,h:number, decay:number){
+        super(x, y,w,h);
+        this.w = w;
+        this.h = h;
+        this.decay = decay;
+        this.color = "#252525";
+    }
+    draw(): void {
+
+        super.draw();
+        this.decay--;
+        if (this.decay<=0){
+            actorList.removeActor(this);
+        }
+    }
+}
 
 // Swords, wooo. Effectively just rectangles that move
 class Sword extends RectangleActor{
@@ -326,7 +459,23 @@ class Sword extends RectangleActor{
     }
     
 }
-
+class Laser extends RectangleActor{
+    decay: number;
+    constructor(x : number, y : number, w:number,h:number,decay:number){
+        super(x, y, w,h);
+        
+        this.decay = decay;
+    }
+    update(): void {
+        if (this.checkCol()){
+            player.onhit();
+        }
+        this.decay--;
+        if (this.decay<=0){
+            actorList.removeActor(this)
+        }
+    }
+}
 
 // Fun one, slams out then retracts
 class evilWall extends RectangleActor{

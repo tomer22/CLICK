@@ -1,4 +1,7 @@
 "use strict";
+function rc() {
+    return `rgba(${Math.floor(Math.random() * 256)},${Math.floor(Math.random() * 256)},${Math.floor(Math.random() * 256)},${.5})`;
+}
 // Define the properties/ behavior of Actor 
 class Actor {
     constructor(x, y) {
@@ -137,11 +140,22 @@ class Rock extends FallingCircle {
     update() {
         super.update();
         //check collision with player
-        if ((this.x - player.x) ** 2 + (this.y - player.y) ** 2 < (this.r + player.r) ** 2 / 1.3) {
+        if ((this.x - player.x) ** 2 + (this.y - player.y) ** 2 < (this.r + player.r) ** 2) {
             //window.alert("You died from a rock!");
             player.onhit();
             //actorList.removeActor(this);
         }
+    }
+}
+class SharpRock extends Rock {
+    constructor(x, y, angle) {
+        super(x, y); // calls the Actor's constructor
+        // Lots of math, basically just generates circles in a ring around the center,
+        // staggered a bit so they don't all converge at one point
+        this.ang = angle;
+        this.y = y;
+        this.x = x;
+        this.speed = 1 / 100;
     }
 }
 // Rocks which follow a pattern
@@ -181,7 +195,7 @@ class PatternRock extends Rock {
             actorList.removeActor(this);
         }
         //check collision with player
-        if ((this.x - player.x) ** 2 + (this.y - player.y) ** 2 < (this.r + player.r) ** 2 / 1.3) {
+        if ((this.x - player.x) ** 2 + (this.y - player.y) ** 2 < (this.r + player.r) ** 2) {
             //window.alert("You died from a rock!");
             player.onhit();
             //actorList.removeActor(this);
@@ -196,10 +210,88 @@ class Fruit extends FallingCircle {
     update() {
         super.update();
         //check collision with player
-        if ((this.x - player.x) ** 2 + (this.y - player.y) ** 2 < (this.r + player.r) ** 2 / 1.3) {
+        if ((this.x - player.x) ** 2 + (this.y - player.y) ** 2 < (this.r + player.r) ** 2) {
             actorList.removeActor(this);
             player.onheal();
         }
+    }
+}
+class Bomb extends Rock {
+    constructor(x, y, decay) {
+        super(x, y);
+        this.x = x;
+        this.y = y;
+        this.decay = decay;
+        this.stDecay = decay;
+        this.color = `rgba(255,0,0,${1 - this.decay / this.stDecay})`;
+        // this.boomColor = "#eb7f86"
+        this.nextBeep = Math.floor(decay / 10);
+        this.r *= 1.5;
+        this.speed = 0;
+    }
+    update() {
+        this.decay--;
+        this.nextBeep--;
+        this.color = `rgba(255,0,0,${1 - this.decay / this.stDecay})`;
+        if (this.decay / this.stDecay <= .8) {
+            if ((this.x - player.x) ** 2 + (this.y - player.y) ** 2 < (this.r + player.r) ** 2) {
+                //window.alert("You died from a rock!");
+                player.onhit();
+                //actorList.removeActor(this);
+            }
+        }
+        // if (this.nextBeep <=Math.min(5,this.decay/20) ){
+        //     this.nextBeep = Math.floor(this.decay/10)
+        //     this.color = "#eb7f86"
+        // }
+        // else{
+        //     this.color = "red";
+        // }
+        if (this.decay <= 50) {
+            this.onBoom();
+            console.log(this.x, this.y);
+            actorList.removeActor(this);
+        }
+    }
+    onBoom() {
+    }
+}
+class LaserBomb extends Bomb {
+    draw() {
+        super.draw();
+        let s1 = this.r;
+        let s2 = this.r / 4;
+        ctx.fillStyle = "#252525";
+        ctx.fillRect(shiftX + this.x * size - s1 * size / 2, shiftY + this.y * size - s2 * size / 2, s1 * size, s2 * size);
+        ctx.fillRect(shiftX + this.x * size - s2 * size / 2, shiftY + this.y * size - s1 * size / 2, s2 * size, s1 * size);
+    }
+    onBoom() {
+        actorList.addActor(new Laser(.5, this.y, 1, 2 * this.r, 20));
+        actorList.addActor(new Laser(this.x, .5, 2 * this.r, 1, 20));
+    }
+}
+class CircleBomb extends Bomb {
+    constructor(x, y, decay, count = Math.floor(Math.random() * 6) + 3) {
+        super(x, y, decay);
+        this.count = count;
+    }
+    draw() {
+        super.draw();
+        let sr = this.r / this.count;
+        ctx.fillStyle = "#252525";
+        for (let i = 0; i < this.count; i++) {
+            ctx.beginPath();
+            ctx.arc(shiftX + this.x * size + size * this.r * (Math.sin(i * 2 * Math.PI / this.count)) / 2, shiftY + this.y * size + size * this.r * (Math.cos(i * 2 * Math.PI / this.count)) / 2, size * sr, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.fill();
+        }
+    }
+    onBoom() {
+        for (let i = 0; i < this.count; i++) {
+            actorList.addActor(new SharpRock(this.x, this.y, -Math.PI / 2 + i * 2 * Math.PI / this.count));
+        }
+    }
+    pattern() {
     }
 }
 // Basic rectangle actor (as the name suggests)
@@ -238,6 +330,22 @@ class RectangleActor extends Actor {
         return (crnrDist <= (player.r ^ 2));
     }
 }
+class DecayRect extends RectangleActor {
+    constructor(x, y, w, h, decay) {
+        super(x, y, w, h);
+        this.w = w;
+        this.h = h;
+        this.decay = decay;
+        this.color = "#252525";
+    }
+    draw() {
+        super.draw();
+        this.decay--;
+        if (this.decay <= 0) {
+            actorList.removeActor(this);
+        }
+    }
+}
 // Swords, wooo. Effectively just rectangles that move
 class Sword extends RectangleActor {
     constructor(x, y, w, h, xV, yV) {
@@ -251,6 +359,21 @@ class Sword extends RectangleActor {
         this.y += this.yV;
         if (this.checkCol()) {
             player.onhit();
+        }
+    }
+}
+class Laser extends RectangleActor {
+    constructor(x, y, w, h, decay) {
+        super(x, y, w, h);
+        this.decay = decay;
+    }
+    update() {
+        if (this.checkCol()) {
+            player.onhit();
+        }
+        this.decay--;
+        if (this.decay <= 0) {
+            actorList.removeActor(this);
         }
     }
 }

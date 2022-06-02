@@ -37,7 +37,7 @@ canvas.addEventListener("click", function(event: MouseEvent) {
 document.addEventListener("keydown", function(event: KeyboardEvent){
     if (event.key==="p"){
         circles++;
-        circles%=4;
+        circles%=6;
     }
      if (event.key === leftKey || event.key === "ArrowLeft"){
         player.xVelocity = -5/(500);
@@ -147,7 +147,7 @@ setInterval( function() {
 // Changes the attack every 5 secs
 setInterval(function() {
     circles++;
-    circles%=5;
+    circles%=6;
 }, 5000)
 
 
@@ -167,13 +167,13 @@ setInterval( function() {
 setInterval( function() {
     if (circles==2){
         let side = Math.floor(Math.random()*4);
-        let count = 5;
+        let count = 8;
         let spot = Math.floor(Math.random()*count)
-        let delay = 1000;
+        let delay = 800;
         slamWarning(side,count,spot,delay)
         setTimeout(function(){slam(side,count,spot);},delay)
     }
-}, 500)
+}, 200)
 
 
 // Squares appear in ground
@@ -199,6 +199,22 @@ setInterval( function() {
 }, 100)
 
 
+setInterval( function() {
+    if (circles===5){
+        bombs();
+        bombz();
+        //funkyRain();
+    }
+    
+}, 1000)
+
+function bombs() {
+    actorList.addActor( new LaserBomb(Math.random()*.8+.1,Math.random()*.8+.1,90));
+};
+
+function bombz() {
+    actorList.addActor( new CircleBomb(Math.random()*.8+.1,Math.random()*.8+.1,90));
+};
 // Pattern circles accepts a function which dictates x -> y
 function patternCircles(lead:number,f:Function) {
     actorList.addActor( new PatternRock(lead,f));

@@ -10,8 +10,8 @@ const backgroundColor : string = "#252525";
 
 // Max health and current health
 
-let mxHth : number = 15;
-let pHth : number = 15;
+let mxHth : number = 50;
+let pHth : number = 50;
 
 //Draw ~ 30 times a second
 let drawIntervalId : number | undefined = window.setInterval(draw, FRAME_LENGTH);

@@ -8,8 +8,8 @@ let shiftX;
 let shiftY;
 const backgroundColor = "#252525";
 // Max health and current health
-let mxHth = 15;
-let pHth = 15;
+let mxHth = 50;
+let pHth = 50;
 //Draw ~ 30 times a second
 let drawIntervalId = window.setInterval(draw, FRAME_LENGTH);
 function draw() {
