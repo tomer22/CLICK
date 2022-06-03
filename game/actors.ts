@@ -50,7 +50,7 @@ class Player extends Actor {
         super(x,y);
         this.xVelocity = 0;
         this.yVelocity = 0;
-        this.r = 1/30;
+        this.r = 1/45;
         
     }
 
@@ -81,7 +81,7 @@ class Player extends Actor {
             }
         }
         ctx.beginPath();
-        ctx.arc(shiftX+this.x*size, shiftY+this.y*size, this.r*size, 0 , Math.PI * 2);
+        ctx.arc(shiftX+this.x*size, shiftY+this.y*size, this.r*size*1.5, 0 , Math.PI * 2);
         ctx.closePath();
         ctx.fill();
         //console.log(this.x,this.y)
@@ -120,6 +120,8 @@ class Player extends Actor {
             }
             this.iFrames = this.iTime;
         }
+        let beat = new Audio('audio/hitsound.mp3');
+        beat.play();
     }
     onheal():void{
         pHth++;

@@ -39,19 +39,19 @@ document.addEventListener("keydown", function(event: KeyboardEvent){
         circles++;
         circles%=4;
     }
-     if (event.key === leftKey){
+     if (event.key === leftKey || event.key === "ArrowLeft"){
         player.xVelocity = -5/(500);
         aDown = 1;
     }
-    if (event.key === rightKey){
+    if (event.key === rightKey || event.key === "ArrowRight"){
         player.xVelocity = 5/(500);
         dDown = 1;
     }
-    if (event.key === upKey){
+    if (event.key === upKey || event.key === "ArrowUp"){
         player.yVelocity = -5/(500);
         wDown = 1;
     }
-    if (event.key === downKey){
+    if (event.key === downKey || event.key === "ArrowDown"){
         player.yVelocity = 5/(500);
         sDown = 1;
     }
@@ -65,7 +65,7 @@ document.addEventListener("keyup", function(event:KeyboardEvent){
     //     player.xVelocity = 0;
     // if (event.key === "ArrowUp" || event.key === "ArrowDown")
     //     player.yVelocity = 0;
-    if (event.key === leftKey){
+    if (event.key === leftKey || event.key === "ArrowLeft"){
         aDown = 0;
         if (dDown){
             player.xVelocity = 5/(500);
@@ -76,7 +76,7 @@ document.addEventListener("keyup", function(event:KeyboardEvent){
     }
         
         
-    if (event.key === rightKey){
+    if (event.key === rightKey || event.key === "ArrowRight"){
         dDown = 0;
         if (aDown){
             player.xVelocity = -5/(500);
@@ -85,7 +85,7 @@ document.addEventListener("keyup", function(event:KeyboardEvent){
             player.xVelocity = 0;
         }
     }
-    if (event.key === upKey){
+    if (event.key === upKey || event.key === "ArrowUp"){
         wDown = 0;
         if (sDown){
             player.yVelocity = 5/(500);
@@ -94,7 +94,7 @@ document.addEventListener("keyup", function(event:KeyboardEvent){
             player.yVelocity = 0;
         }
     }
-    if (event.key === downKey){
+    if (event.key === downKey || event.key === "ArrowDown"){
         sDown = 0;
         if (wDown){
             player.yVelocity = -5/(500);

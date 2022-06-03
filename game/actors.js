@@ -47,7 +47,7 @@ var Player = /** @class */ (function (_super) {
         _this.iColor = "#587acc";
         _this.xVelocity = 0;
         _this.yVelocity = 0;
-        _this.r = 1 / 30;
+        _this.r = 1 / 45;
         return _this;
     }
     Player.prototype.moveLeft = function () {
@@ -73,7 +73,7 @@ var Player = /** @class */ (function (_super) {
             }
         }
         ctx.beginPath();
-        ctx.arc(shiftX + this.x * size, shiftY + this.y * size, this.r * size, 0, Math.PI * 2);
+        ctx.arc(shiftX + this.x * size, shiftY + this.y * size, this.r * size * 1.5, 0, Math.PI * 2);
         ctx.closePath();
         ctx.fill();
         //console.log(this.x,this.y)
@@ -108,6 +108,8 @@ var Player = /** @class */ (function (_super) {
             }
             this.iFrames = this.iTime;
         }
+        var beat = new Audio('audio/hitsound.mp3');
+        beat.play();
     };
     Player.prototype.onheal = function () {
         pHth++;
@@ -160,7 +162,7 @@ var Rock = /** @class */ (function (_super) {
     Rock.prototype.update = function () {
         _super.prototype.update.call(this);
         //check collision with player
-        if (Math.pow((this.x - player.x), 2) + Math.pow((this.y - player.y), 2) < Math.pow((this.r + player.r), 2) / 3) {
+        if (Math.pow((this.x - player.x), 2) + Math.pow((this.y - player.y), 2) < Math.pow((this.r + player.r), 2)) {
             //window.alert("You died from a rock!");
             player.onhit();
             //actorList.removeActor(this);
@@ -211,7 +213,7 @@ var PatternRock = /** @class */ (function (_super) {
             actorList.removeActor(this);
         }
         //check collision with player
-        if (Math.pow((this.x - player.x), 2) + Math.pow((this.y - player.y), 2) < Math.pow((this.r + player.r), 2) / 3) {
+        if (Math.pow((this.x - player.x), 2) + Math.pow((this.y - player.y), 2) < Math.pow((this.r + player.r), 2)) {
             //window.alert("You died from a rock!");
             player.onhit();
             //actorList.removeActor(this);
@@ -229,7 +231,7 @@ var Fruit = /** @class */ (function (_super) {
     Fruit.prototype.update = function () {
         _super.prototype.update.call(this);
         //check collision with player
-        if (Math.pow((this.x - player.x), 2) + Math.pow((this.y - player.y), 2) < Math.pow((this.r + player.r), 2) / 3) {
+        if (Math.pow((this.x - player.x), 2) + Math.pow((this.y - player.y), 2) < Math.pow((this.r + player.r), 2)) {
             actorList.removeActor(this);
             player.onheal();
         }

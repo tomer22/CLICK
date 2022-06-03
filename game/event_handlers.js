@@ -1,17 +1,16 @@
-"use strict";
 // Some standard user-input events. Define handling of these events here.
 // for easy changing of arrow keys <--> WASD
-const upKey = "w";
-const leftKey = "a";
-const downKey = "s";
-const rightKey = "d";
-let circles = 1;
+var upKey = "w";
+var leftKey = "a";
+var downKey = "s";
+var rightKey = "d";
+var circles = 1;
 // Didn't want a down down variable, so I stuck with the letters
-let wDown = 0;
-let aDown = 0;
-let sDown = 0;
-let dDown = 0;
-let player = new Player(.5, .5);
+var wDown = 0;
+var aDown = 0;
+var sDown = 0;
+var dDown = 0;
+var player = new Player(.5, .5);
 ;
 window.addEventListener("load", function () {
     //Handle when the whole page finishes loading
@@ -29,19 +28,19 @@ document.addEventListener("keydown", function (event) {
         circles++;
         circles %= 4;
     }
-    if (event.key === leftKey) {
+    if (event.key === leftKey || event.key === "ArrowLeft") {
         player.xVelocity = -5 / (500);
         aDown = 1;
     }
-    if (event.key === rightKey) {
+    if (event.key === rightKey || event.key === "ArrowRight") {
         player.xVelocity = 5 / (500);
         dDown = 1;
     }
-    if (event.key === upKey) {
+    if (event.key === upKey || event.key === "ArrowUp") {
         player.yVelocity = -5 / (500);
         wDown = 1;
     }
-    if (event.key === downKey) {
+    if (event.key === downKey || event.key === "ArrowDown") {
         player.yVelocity = 5 / (500);
         sDown = 1;
     }
@@ -53,7 +52,7 @@ document.addEventListener("keyup", function (event) {
     //     player.xVelocity = 0;
     // if (event.key === "ArrowUp" || event.key === "ArrowDown")
     //     player.yVelocity = 0;
-    if (event.key === leftKey) {
+    if (event.key === leftKey || event.key === "ArrowLeft") {
         aDown = 0;
         if (dDown) {
             player.xVelocity = 5 / (500);
@@ -62,7 +61,7 @@ document.addEventListener("keyup", function (event) {
             player.xVelocity = 0;
         }
     }
-    if (event.key === rightKey) {
+    if (event.key === rightKey || event.key === "ArrowRight") {
         dDown = 0;
         if (aDown) {
             player.xVelocity = -5 / (500);
@@ -71,7 +70,7 @@ document.addEventListener("keyup", function (event) {
             player.xVelocity = 0;
         }
     }
-    if (event.key === upKey) {
+    if (event.key === upKey || event.key === "ArrowUp") {
         wDown = 0;
         if (sDown) {
             player.yVelocity = 5 / (500);
@@ -80,7 +79,7 @@ document.addEventListener("keyup", function (event) {
             player.yVelocity = 0;
         }
     }
-    if (event.key === downKey) {
+    if (event.key === downKey || event.key === "ArrowDown") {
         sDown = 0;
         if (wDown) {
             player.yVelocity = -5 / (500);
@@ -131,12 +130,12 @@ setInterval(function () {
 // Create telegraph for attack, then do said wall attack after some time in a random spot
 setInterval(function () {
     if (circles == 2) {
-        let side = Math.floor(Math.random() * 4);
-        let count = 5;
-        let spot = Math.floor(Math.random() * count);
-        let delay = 1000;
-        slamWarning(side, count, spot, delay);
-        setTimeout(function () { slam(side, count, spot); }, delay);
+        var side_1 = Math.floor(Math.random() * 4);
+        var count_1 = 5;
+        var spot_1 = Math.floor(Math.random() * count_1);
+        var delay = 1000;
+        slamWarning(side_1, count_1, spot_1, delay);
+        setTimeout(function () { slam(side_1, count_1, spot_1); }, delay);
     }
 }, 500);
 // Squares appear in ground
@@ -158,22 +157,22 @@ function patternCircles(lead, f) {
 }
 ;
 function sign(x) {
-    let spot = Math.sin(x * 3 * Math.PI);
+    var spot = Math.sin(x * 3 * Math.PI);
     return (spot + 1) / 2;
 }
 // Creates expanding squares in a random spot
 function mettaton() {
-    let count = 5;
-    let hex = Math.floor(Math.random() * count);
-    let hi = Math.floor(Math.random() * count);
+    var count = 5;
+    var hex = Math.floor(Math.random() * count);
+    var hi = Math.floor(Math.random() * count);
     actorList.addActor(new expandingSquare((hex + .5) / count, (hi + .5) / count, .01, 1 / count, 50));
 }
 // Creates a set of triangles pointing in certain directions for telegraphing
 function slamWarning(side, count, spot, delay) {
-    let b = 1 / (count * 2);
-    let h = .5 / (count * 2);
-    let warnings = 5;
-    for (let i = -warnings / 2; i < warnings / 2; i++) {
+    var b = 1 / (count * 2);
+    var h = .5 / (count * 2);
+    var warnings = 5;
+    for (var i = -warnings / 2; i < warnings / 2; i++) {
         if (side === 0) {
             actorList.addActor(new Warning((Math.floor(spot) + .5) / count, .5 + (i + .5) / (warnings), b, h, 0, delay / 25));
         }
@@ -190,7 +189,7 @@ function slamWarning(side, count, spot, delay) {
 }
 // Creates the evil wall which slams, then retracts
 function slam(side, count, spot) {
-    let speed = .06;
+    var speed = .06;
     if (side === 0) {
         actorList.addActor(new evilWall((Math.floor(spot) + .5) / count, 0, 1 / count, 0, 0, speed));
     }
@@ -205,24 +204,26 @@ function slam(side, count, spot) {
     }
 }
 // summons swords from one of three directions
-function swordRain(count = Math.random() * 4 + 5, speed = Math.random() / 500 + .009) {
-    let side = Math.floor(Math.random() * 3);
-    let width = (.3 * 6) / (count ** 2);
+function swordRain(count, speed) {
+    if (count === void 0) { count = Math.random() * 4 + 5; }
+    if (speed === void 0) { speed = Math.random() / 500 + .009; }
+    var side = Math.floor(Math.random() * 3);
+    var width = (.3 * 6) / (Math.pow(count, 2));
     if (side === 0) {
         //Commented out versions do funky stuff, might be cool but not what was intended here specifically
-        for (let i = 0; i < count; i++) {
+        for (var i = 0; i < count; i++) {
             // actorList.addActor(new Sword((i+Math.random()*.5+.25)/count,-1,width,.2,0,Math.random()/100+.005))
             actorList.addActor(new Sword((i + Math.random() * .5 + .25) / (count + .5), -.2, width, .2, 0, speed));
         }
     }
     else if (side === 1) {
-        for (let i = 0; i < count; i++) {
+        for (var i = 0; i < count; i++) {
             // actorList.addActor(new Sword(-1,(i+Math.random()*.5+.25)/count,.2,width,Math.random()/100+.005,0))
             actorList.addActor(new Sword(-.2, (i + Math.random() * .5 + .25) / (count + .5), .2, width, speed, 0));
         }
     }
     else if (side === 2) {
-        for (let i = 0; i < count; i++) {
+        for (var i = 0; i < count; i++) {
             // actorList.addActor(new Sword(2,(i+Math.random()*.5+.25)/count,.2,width,-(Math.random()/100+.005),0))
             actorList.addActor(new Sword(1.2, (i + Math.random() * .5 + .25) / (count + .5), .2, width, -speed, 0));
         }
@@ -232,25 +233,27 @@ function swordRain(count = Math.random() * 4 + 5, speed = Math.random() / 500 + 
     }
 }
 // Like swordRain, but each sword has individual speed
-function funkyRain(count = Math.random() * 4 + 5, speed = Math.random() / 100 + .005) {
-    let side = Math.floor(Math.random() * 3);
-    let width = .3 / count;
+function funkyRain(count, speed) {
+    if (count === void 0) { count = Math.random() * 4 + 5; }
+    if (speed === void 0) { speed = Math.random() / 100 + .005; }
+    var side = Math.floor(Math.random() * 3);
+    var width = .3 / count;
     if (side === 0) {
         //Commented out versions do funky stuff, might be cool but not what was intended here specifically
         // Nvm I quite like the funky stuff
-        for (let i = 0; i < count - 1; i++) {
+        for (var i = 0; i < count - 1; i++) {
             actorList.addActor(new Sword((i + Math.random() * .5 + .25) / count, -1, width, .2, 0, Math.random() / 100 + .005));
             //actorList.addActor(new Sword((i+Math.random()*.5+.25)/count,-1,width,.2,0,speed))
         }
     }
     else if (side === 1) {
-        for (let i = 0; i < count - 1; i++) {
+        for (var i = 0; i < count - 1; i++) {
             actorList.addActor(new Sword(-1, (i + Math.random() * .5 + .25) / count, .2, width, Math.random() / 100 + .005, 0));
             //actorList.addActor(new Sword(-1,(i+Math.random()*.5+.25)/count,.2,width,speed,0))
         }
     }
     else if (side === 2) {
-        for (let i = 0; i < count - 1; i++) {
+        for (var i = 0; i < count - 1; i++) {
             actorList.addActor(new Sword(2, (i + Math.random() * .5 + .25) / count, .2, width, -(Math.random() / 100 + .005), 0));
             //actorList.addActor(new Sword(2,(i+Math.random()*.5+.25)/count,.2,width,-speed,0))
         }
