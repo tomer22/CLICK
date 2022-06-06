@@ -473,3 +473,42 @@ var Flower = /** @class */ (function (_super) {
     };
     return Flower;
 }(Actor));
+var diamondSquare = /** @class */ (function (_super) {
+    __extends(diamondSquare, _super);
+    function diamondSquare(x, y, growth, max, decay) {
+        var _this = _super.call(this, x, y, 0, 0) || this;
+        // Start as warning color
+        _this.color = "#999999";
+        _this.growth = growth;
+        _this.max = max;
+        _this.decay = decay;
+        return _this;
+    }
+    diamondSquare.prototype.draw = function () {
+        // Rectangles x and y determine its center
+        ctx.rotate(1);
+    };
+    diamondSquare.prototype.update = function () {
+        // Square grows
+        if (this.w < this.max) {
+            this.w += this.growth;
+            this.h += this.growth;
+        }
+        // Square is at max
+        if (this.w >= this.max) {
+            // Becomes deadly
+            this.color = "white";
+            this.w = this.max;
+            this.h = this.max;
+            // Decays over time, so it eventually disappears
+            this.decay--;
+            if (this.decay <= 0) {
+                actorList.removeActor(this);
+            }
+            if (this.checkCol()) {
+                player.onhit();
+            }
+        }
+    };
+    return diamondSquare;
+}(RectangleActor));
