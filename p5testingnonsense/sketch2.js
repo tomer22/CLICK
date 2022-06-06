@@ -47,6 +47,7 @@ function setup() {
   let divsz = 25;
   let divsz2 = 50;
   console.log(peaks.length);
+  console.log(peaks)
   for (var i = 0 ; i < peaks.length ; i=i+divsz){
     let curtol = 0;
     let burtol =  0;
