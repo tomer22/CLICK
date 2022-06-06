@@ -161,11 +161,17 @@ function sign(x) {
     return (spot + 1) / 2;
 }
 // Creates expanding squares in a random spot
+//function mettaton(){
+//    let count = 5;
+//    let hex = Math.floor(Math.random()*count)
+//    let hi = Math.floor(Math.random()*count)
+//    actorList.addActor(new expandingSquare((hex+.5)/count,(hi+.5)/count,.01,1/count,50));
+//}
 function mettaton() {
     var count = 5;
     var hex = Math.floor(Math.random() * count);
     var hi = Math.floor(Math.random() * count);
-    actorList.addActor(new expandingSquare((hex + .5) / count, (hi + .5) / count, .01, 1 / count, 50));
+    actorList.addActor(new diamondSquare((hex + .5) / count, (hi + .5) / count, .01, 1 / count, 50));
 }
 // Creates a set of triangles pointing in certain directions for telegraphing
 function slamWarning(side, count, spot, delay) {

@@ -542,3 +542,48 @@ class Flower extends Actor {
         this.y+= this.speedY;
     }
 }
+
+
+class diamondSquare extends RectangleActor{
+    draw(): void {
+        // Rectangles x and y determine its center
+        ctx.rotate(1)
+    }
+    growth:number;
+    max:number;
+   
+    decay:number;
+    constructor(x : number, y : number, growth:number,max:number,decay:number){
+        super(x, y, 0,0);
+
+        // Start as warning color
+        this.color = "#999999"
+        this.growth =  growth;
+        this.max = max;
+        this.decay =  decay;
+        
+      
+    }
+    update(): void {
+        // Square grows
+        if(this.w<this.max){
+            this.w+=this.growth;
+            this.h+=this.growth;
+        }
+        // Square is at max
+        if(this.w>=this.max){
+            // Becomes deadly
+            this.color = "white"
+            this.w=this.max;
+            this.h=this.max;
+            // Decays over time, so it eventually disappears
+            this.decay--;
+            if (this.decay<=0){
+                actorList.removeActor(this);
+            }
+            if (this.checkCol()){
+                player.onhit()
+            }
+        }
+    }
+}

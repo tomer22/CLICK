@@ -209,11 +209,18 @@ function sign(x:number){
 }
 
 // Creates expanding squares in a random spot
+//function mettaton(){
+//    let count = 5;
+//    let hex = Math.floor(Math.random()*count)
+//    let hi = Math.floor(Math.random()*count)
+//    actorList.addActor(new expandingSquare((hex+.5)/count,(hi+.5)/count,.01,1/count,50));
+//}
+
 function mettaton(){
     let count = 5;
     let hex = Math.floor(Math.random()*count)
     let hi = Math.floor(Math.random()*count)
-    actorList.addActor(new expandingSquare((hex+.5)/count,(hi+.5)/count,.01,1/count,50));
+    actorList.addActor(new diamondSquare((hex+.5)/count,(hi+.5)/count,.01,1/count,50));
 }
 
 
