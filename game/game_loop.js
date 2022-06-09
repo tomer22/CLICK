@@ -1,6 +1,20 @@
 "use strict";
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
+let file = new FileReader();
+let orders;
+let afile;
+document.getElementById('inputFile').addEventListener('change', function () {
+    file.readAsText(this.files[0]);
+    file.onload = () => {
+        document.getElementById('output').textContent = file.result;
+        orders = file.result.split("\r\n");
+        console.log(orders);
+        afile = new Audio("../audio/" + orders[0]);
+        afile.load();
+        afile.play();
+    };
+});
 const FRAME_LENGTH = 30;
 const actorList = new ActorList();
 let size;

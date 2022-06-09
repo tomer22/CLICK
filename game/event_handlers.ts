@@ -24,8 +24,9 @@ window.addEventListener("load", function() {
     // A sample:
         
     actorList.addActor(player);
+   
+    
 
- 
 
 })
 
