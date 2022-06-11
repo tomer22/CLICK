@@ -9,11 +9,14 @@ const rightKey = "d"
 let attacks = [];
 let circles = 6;
 // Didn't want a down down variable, so I stuck with the letters
+let isWinning = 0;
 let wDown = 0;
 let aDown = 0;
 let sDown = 0;
 let dDown = 0;
-let player : Player = new Player(.5,.5);; 
+let isDying = 0;
+let isDead =0;
+let player : Player; 
 
 
 window.addEventListener("load", function() {
@@ -22,28 +25,71 @@ window.addEventListener("load", function() {
 
     //Often, this includes populating the actorList.
     // A sample:
-        
-    actorList.addActor(player);
+        onStart()
+   
    
     
 
 
 })
+function onStart(){
+    for (let attackk of attacks){
+        clearInterval(attackk);
+    }
+    actorList.removeAllActors()
+    player = new Player(.5,.5);; 
+    actorList.addActor(player);
+  
+    attacks = [];
+    circles = 6;
+    // Didn't want a down down variable, so I stuck with the letters
+    isWinning = 0;
+    wDown = 0;
+    aDown = 0;
+    sDown = 0;
+    dDown = 0;
+    tLength = 7;
+    positions = [];
+     curFrame = 1;
+     curFrame2 = 1;
+    mxHth = 10;
+    pHth  = 10;
+    gameState = 0;
+  
+    playing = false;
+    playing2 = false;
+    difficulty = 1;
+
+    screeeen = 0;
+    isStarting = 0;
+    isDying = 0;
+    isDead = 0;
+        
+}
 
 canvas.addEventListener("click", function(event: MouseEvent) {
     //Handle click events
     //Get position of click on canvas: event.offsetX, event.offsetY
     if (!playing){
         if (event.offsetX > shiftX+size/3 && event.offsetX < shiftX + 2*size/3 && event.offsetY > shiftY+size/3 && event.offsetY < shiftY + 2*size/3){
-            orders = battles[0].split("\n")
-            console.log(orders)
-            afile = new Audio("../audio/"+orders[0])
-            afile.load()
-            setTimeout(function(){
-                afile.play()
-                playing2 = true;
-            },1000)
-            playing = true;
+            if (isMobile){
+            if (event.offsetX > shiftX+size/3 && event.offsetX < shiftX + 2*size/3 && event.offsetY > shiftY+size/3 && event.offsetY < shiftY + 2*size/3){
+                orders = battles[0].split("\n")
+                console.log(orders)
+                afile = new Audio("../audio/"+orders[0])
+                afile.load()
+                setTimeout(function(){
+                    afile.play()
+                    playing2 = true;
+                },1000)
+                playing = true;
+                gameState = 0;
+            }
+        }
+        else{
+            isStarting = 1;
+        }
+            
         }
         for (let i=0;i<maxDifficulty;i++){
                 
@@ -54,6 +100,11 @@ canvas.addEventListener("click", function(event: MouseEvent) {
                 pHth = difHts[difficulty]
             }
             
+        }
+    }
+    if (gameState == 1 || gameState == 2){
+        if (event.offsetX > shiftX+size/3 && event.offsetX < shiftX + 2*size/3 && event.offsetY > shiftY+size/3 && event.offsetY < shiftY + 2*size/3){
+            onStart();
         }
     }
 });
@@ -385,7 +436,7 @@ function readattack(curFrame22:number){
     while(Number(border[0]) == curFrame){
         curFrame2++;
         if (border[1]==="win"){
-            gameState = 2
+            isWinning = 1;
         }
         else if (border[1] ==="a"){
             switch (border[2]) {
@@ -481,7 +532,7 @@ function readattack(curFrame22:number){
                         //     side%=4;
                         // }
                         slamWarning(side,count,spot,delay)
-                        setTimeout(function(){slam(side,count,spot);},delay)
+                        setTimeout(function(){if (playing && gameState ==0){slam(side,count,spot);}},delay)
                     },Number(border[4]));
                     break;
                 case "3":
@@ -568,3 +619,121 @@ function readattack(curFrame22:number){
 // // setInterval(function () {
 //     actorList.addActor(new Flower(Math.random() * (620) + 690, (Math.random() * (620) + 690),50));
 // }, 2000);
+window.addEventListener('load', () => {
+    if (isMobile){
+      resize();
+
+      document.addEventListener('touchstart', startDrawing);
+      document.addEventListener('touchend', stopDrawing);
+      document.addEventListener('touchcancel', stopDrawing);
+      document.addEventListener('touchmove', Draw);
+      window.addEventListener('resize', resize);}
+
+      
+  });
+
+
+
+
+  var hwidth, hheight, hradius, hx_orig, hy_orig;
+  function resize() {
+      hwidth = window.innerWidth;
+      hradius = size/6;
+      hheight = hradius * 6.5;
+      background();
+      joystick(shiftX/3, shiftY+5*size/6);
+  }
+
+  function background() {
+      hx_orig = shiftX/3;
+      hy_orig = shiftY+5*size/6;
+
+      ctx.beginPath();
+      ctx.arc(hx_orig, hy_orig, size/6, 0, Math.PI * 2, true);
+      ctx.fillStyle = '#ECE5E5';
+      ctx.fill();
+  }
+
+  function joystick(hhwidth, hhheight) {
+      ctx.beginPath();
+      ctx.arc(hhwidth, hhheight, size/6, 0, Math.PI * 2, true);
+      ctx.fillStyle = '#F08080';
+      ctx.fill();
+      ctx.strokeStyle = '#F6ABAB';
+      ctx.lineWidth = 8;
+      ctx.stroke();
+  }
+
+  let coord = { x: 0, y: 0 };
+  let paint = false;
+
+  function getPosition(event) {
+      var mouse_x = event.clientX || event.touches[0].clientX;
+      var mouse_y = event.clientY || event.touches[0].clientY;
+      coord.x = mouse_x - canvas.offsetLeft;
+      coord.y = mouse_y - canvas.offsetTop;
+  }
+
+  function is_it_in_the_circle() {
+      var current_radius = Math.sqrt(Math.pow(coord.x - hx_orig, 2) + Math.pow(coord.y - hy_orig, 2));
+      if (size/6 >= current_radius) return true
+      else return false
+  }
+  
+
+  function startDrawing(event) {
+      paint = true;
+      getPosition(event);
+      if (is_it_in_the_circle()) {
+         // ctx.clearRect(0, 0, canvas.width, canvas.height);
+          background();
+          joystick(coord.x, coord.y);
+          Draw(event);
+      }
+  }
+
+
+  function stopDrawing() {
+      paint = false;
+      ctx.clearRect(0, 0, canvas.width/4, canvas.height);
+      background();
+      joystick(shiftX/3, shiftY+5*size/6);
+      player.yVelocity = 0
+      player.xVelocity = 0
+
+
+  }
+
+  function Draw(event) {
+      getPosition(event);
+      if (paint) {
+          //ctx.clearRect(0, 0, canvas.width, canvas.height);
+          background();
+          var angle_in_degrees,x, y, speed;
+          var angle = Math.atan2((coord.y - hy_orig), (coord.x - hx_orig));
+
+          if (Math.sign(angle) == -1) {
+              angle_in_degrees = Math.round(-angle * 180 / Math.PI);
+          }
+          else {
+              angle_in_degrees =Math.round( 360 - angle * 180 / Math.PI);
+          }
+
+
+          if (is_it_in_the_circle()) {
+              joystick(coord.x, coord.y);
+              x = coord.x;
+              y = coord.y;
+          }
+          else {
+              x = size/6 * Math.cos(angle) + hx_orig;
+              y = size/6 * Math.sin(angle) + hy_orig;
+              joystick(x, y);
+          }
+
+      
+          getPosition(event);
+          player.yVelocity = 7 * Math.sin(angle)/500
+          player.xVelocity = 7 * Math.cos(angle)/500
+      }
+  } 

@@ -61,26 +61,27 @@ class Player extends Actor {
     }
     draw() {
         //ctx.fillStyle = "blue";
-        //ctx.fillRect(this.x - 10, this.y - 10, 20, 20);
-        for (var i = 0; i < positions.length; i++) {
-            let ratio = (i + 1) / positions.length;
-            ctx.fillStyle = "rgba(70, 121, 240, " + ratio / 2 + ")";
+        if (!isDead) { //ctx.fillRect(this.x - 10, this.y - 10, 20, 20);
+            for (var i = 0; i < positions.length; i++) {
+                let ratio = (i + 1) / positions.length;
+                ctx.fillStyle = "rgba(70, 121, 240, " + ratio / 2 + ")";
+                ctx.beginPath();
+                ctx.arc(shiftX + positions[i].x * size, shiftY + positions[i].y * size, ratio * this.r * size, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+            }
+            ctx.fillStyle = this.color;
+            if (this.iFrames) {
+                this.iFrames--;
+                if (Math.floor(this.iFrames / 5) % 2) {
+                    ctx.fillStyle = this.iColor;
+                }
+            }
             ctx.beginPath();
-            ctx.arc(shiftX + positions[i].x * size, shiftY + positions[i].y * size, ratio * this.r * size, 0, Math.PI * 2);
+            ctx.arc(shiftX + this.x * size, shiftY + this.y * size, this.r * size, 0, Math.PI * 2);
             ctx.closePath();
             ctx.fill();
         }
-        ctx.fillStyle = this.color;
-        if (this.iFrames) {
-            this.iFrames--;
-            if (Math.floor(this.iFrames / 5) % 2) {
-                ctx.fillStyle = this.iColor;
-            }
-        }
-        ctx.beginPath();
-        ctx.arc(shiftX + this.x * size, shiftY + this.y * size, this.r * size, 0, Math.PI * 2);
-        ctx.closePath();
-        ctx.fill();
         //console.log(this.x,this.y)
     }
     update() {
@@ -107,14 +108,23 @@ class Player extends Actor {
         if (!this.iFrames) {
             pHth--;
             if (pHth <= 0) {
-                setTimeout(function () {
-                    gameState = 1;
-                }, 50);
+                this.ondeath();
             }
             if (pHth < 0) {
                 pHth = 0;
             }
             this.iFrames = this.iTime;
+        }
+    }
+    ondeath() {
+        isDead = 1;
+        actorList.removeActor(this);
+        setTimeout(function () {
+            isDying = 1;
+        }, 500);
+        let bount = 5;
+        for (let i = 0; i < bount; i++) {
+            actorList.addActor(new SharpRock(this.x, this.y, -Math.PI / 2 + i * 2 * Math.PI / bount, this.color, this.r / (bount ** (1 / 4))));
         }
     }
     onheal() {
@@ -202,10 +212,14 @@ class Rock extends FallingCircle {
     }
 }
 class SharpRock extends Rock {
-    constructor(x, y, angle) {
+    constructor(x, y, angle, color = "red", r = "die") {
         super(x, y); // calls the Actor's constructor
         // Lots of math, basically just generates circles in a ring around the center,
         // staggered a bit so they don't all converge at one point
+        if (r != "die") {
+            this.r = r;
+        }
+        this.color = color;
         this.ang = angle;
         this.y = y;
         this.x = x;
