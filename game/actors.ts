@@ -3,6 +3,19 @@ function rc():string{
     return `rgba(${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)},${.5})`;
    
 }
+let tLength = 7;
+var positions = [];
+ 
+function storeLastPosition(xPos, yPos) {
+  positions.push({
+    x: xPos,
+    y: yPos
+  });
+ 
+  if (positions.length > tLength) {
+    positions.shift();
+  }
+}
 // Define the properties/ behavior of Actor 
 class Actor {
     
@@ -76,7 +89,17 @@ class Player extends Actor {
     draw() : void {
         //ctx.fillStyle = "blue";
         //ctx.fillRect(this.x - 10, this.y - 10, 20, 20);
+        for (var i = 0; i < positions.length; i++) {
+            let ratio = (i + 1) / positions.length;
+           
+            ctx.fillStyle = "rgba(70, 121, 240, " + ratio / 2 + ")";
+            ctx.beginPath();
+            ctx.arc(shiftX+positions[i].x*size, shiftY+positions[i].y*size, ratio*this.r*size, 0 , Math.PI * 2);
+            ctx.closePath();
+            ctx.fill();
+        }
         ctx.fillStyle = this.color;
+        
         if (this.iFrames){
             this.iFrames--;
             if (Math.floor(this.iFrames/5)%2){
@@ -92,8 +115,9 @@ class Player extends Actor {
 
     update() : void {
       
-        this.x += this.xVelocity;
-        this.y += this.yVelocity;
+        this.x += this.xVelocity*1.3;
+        this.y += this.yVelocity*1.3;
+        storeLastPosition(this.x, this.y);
 
         // Tampering with collision to make it look nicer
         let wallShift = this.r;
@@ -116,7 +140,9 @@ class Player extends Actor {
         if (!this.iFrames){
             pHth--;
             if (pHth <= 0){
-                window.alert("git gud")
+                setTimeout(function(){
+                gameState = 1;
+                },50)
             }
             if (pHth < 0){
                 pHth =0;
@@ -141,17 +167,20 @@ class FallingCircle extends Actor {
     r : number;
     ang:number;
     speed:number;
+    decay:number;
     //override Actor's constructor
-    constructor(x : number, y : number, color : string) {
+    constructor(x : number, y : number, color : string, decay:number=0) {
         super(x, y ); // calls the Actor's constructor
         this.color = color;
         this.r = 1/30;
+        this.decay = decay
         // Lots of math, basically just generates circles in a ring around the center,
         // staggered a bit so they don't all converge at one point
         this.ang = Math.random()*2*Math.PI;
         this.y = .5+(.5-y)*Math.sin(this.ang)+x*Math.cos(this.ang)/2;
         this.x = .5+(.5-y)*Math.cos(this.ang)+x*Math.sin(this.ang)/2;
-        this.speed = Math.random()/100+.005;
+        //this.speed = Math.random()/100+.005;
+        this.speed = 1/100
 
     }
 
@@ -161,31 +190,64 @@ class FallingCircle extends Actor {
         ctx.arc(shiftX+this.x*size, shiftY+this.y*size, size*this.r, 0 , Math.PI * 2);
         ctx.closePath();
         ctx.fill();
+       
         
     }
     
 
     update() : void {
         // Angular movement
+        //console.log(this.ang)
         this.y -= this.speed*Math.sin(this.ang);
         this.x -= this.speed*Math.cos(this.ang);
         
         if ((this.y-.5)**2+(this.x-.5)**2> 3){
             actorList.removeActor(this);
         }
+        let inpx = this.x
+        let inpy = this.y
+        let inpang = this.ang;
+        this.ang = inpang
+        let xdif = player.x-inpx;
+                            let ydif = player.y-inpy;
+                            if (xdif<0 && ydif<0){
+                                inpang =   Math.PI/2-Math.acos(Math.abs(player.y-inpy)/Math.sqrt((player.y-inpy)**2+(player.x-inpx)**2))
+                            }
+                            else if (xdif>0 && ydif<0){
+                                inpang =   Math.PI/2+Math.acos(Math.abs(player.y-inpy)/Math.sqrt((player.y-inpy)**2+(player.x-inpx)**2))
+                            }
+                            else if (xdif<0 && ydif>0){
+                                inpang =   -Math.PI/2+Math.acos(Math.abs(player.y-inpy)/Math.sqrt((player.y-inpy)**2+(player.x-inpx)**2))
+                            }
+                            else if (xdif>0 && ydif>0){
+                                inpang =   -Math.PI/2-Math.acos(Math.abs(player.y-inpy)/Math.sqrt((player.y-inpy)**2+(player.x-inpx)**2))
+                            
+                            }
+        this.decay--;
+        if (this.decay>=0){
+            this.ang = inpang
+           // ==this.ang += (inpang-this.ang)/3
+        }
     }
 }
 
 class Rock extends FallingCircle {
     //overrides FallingCircle constructor
-    constructor(x : number, y : number = -.5){
-        super(x, y, "red");
+    constructor(x : number, y : number = -.5,ang:number = -10,decay=0){
+        super(x, y, "red",decay);
+        if (ang!==-10){
+            this.ang = ang;
+            this.x = x
+            this.y = y
+        }
+        
         
     }
 
     //override
     update() {
         super.update()
+        //console.log(this.x,this.y)
         //check collision with player
         if ( (this.x- player.x) ** 2 + (this.y - player.y) ** 2  < (this.r+player.r)**2){
             //window.alert("You died from a rock!");
@@ -306,7 +368,7 @@ class Bomb extends Rock {
         this.decay--;
         this.nextBeep--;
         this.color = `rgba(255,0,0,${1-this.decay/this.stDecay})`;
-        if (this.decay/this.stDecay <= .8){
+        if (this.decay/this.stDecay <= .5){
             if ( (this.x- player.x) ** 2 + (this.y - player.y) ** 2  < (this.r+player.r)**2){
                 //window.alert("You died from a rock!");
                 player.onhit()
@@ -322,7 +384,7 @@ class Bomb extends Rock {
         // }
         if (this.decay<=50){
             this.onBoom()
-            console.log(this.x,this.y)
+            //console.log(this.x,this.y)
             actorList.removeActor(this);
         }
     }
