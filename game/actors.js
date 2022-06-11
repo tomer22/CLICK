@@ -86,7 +86,6 @@ class Player extends Actor {
     update() {
         this.x += this.xVelocity * 1.3;
         this.y += this.yVelocity * 1.3;
-        storeLastPosition(this.x, this.y);
         // Tampering with collision to make it look nicer
         let wallShift = this.r;
         if (this.x > 1 - wallShift) {
@@ -101,6 +100,7 @@ class Player extends Actor {
         if (this.y < wallShift) {
             this.y = wallShift;
         }
+        storeLastPosition(this.x, this.y);
     }
     // When player is hit, if it is has not been recently hit, take damage
     onhit() {
