@@ -1,7 +1,7 @@
 // first try at live beat detection from fft data
 // contains two classes : one for onset detection - OnsetDetect and one to detect when amplitude reaches a certain treshold - BeatDetect (probably ill named)
 
-var file ='../audio/ASGORE.mp3'
+var file ='../audio/UNDYNE.mp3'
 //var file ='../audio/MUFFET.mp3'
 
 
@@ -127,13 +127,13 @@ function setup() {
     */ 
 
    // low band : 40Hz-120Hz
-   detectors.push( new p5.PeakDetect(40, 120, 0.8, 20) );
+   detectors.push( new p5.PeakDetect(40, 120, 0.2, 20) );
 
    // lowMid band : 140Hz-400Hz
-   detectors.push( new p5.PeakDetect(140, 400, 0.7, 20) );
+   detectors.push( new p5.PeakDetect(140, 400, 0.2, 20) );
 
    // mid band : 400Hz-2.6kHz
-   detectors.push( new p5.PeakDetect(400, 2600, 0.4, 20) );
+   detectors.push( new p5.PeakDetect(4000, 15000, 0.2, 20) );
 
    // make a similar array of beatBalls that will show when a beat is detected
    beatBalls.push( new BeatBall(650, 50) );
