@@ -72,7 +72,7 @@ function draw() {
     if (gameState == 1) {
         ctx.font = `${size / 4}px Helvetica`;
         ctx.textAlign = "center";
-        ctx.fillStyle = "blue";
+        ctx.fillStyle = "#1451e0";
         ctx.fillText('YOU DIED', canvas.width / 2, canvas.height / 3);
         ctx.font = `${size / 8}px Helvetica`;
         ctx.fillText(`TRY AGAIN?`, canvas.width / 2, 3 * canvas.height / 4);
