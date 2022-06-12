@@ -93,7 +93,9 @@ function draw() {
         ctx.fillText(`YOU WIN`, canvas.width / 2, canvas.height / 5);
         ctx.font = `${size / 6}px Arial`;
         let difName = difNames[difficulty];
+        ctx.fillStyle = `${difCols[difficulty - 1]}`;
         ctx.fillText(`${difName} MODE`, canvas.width / 2, canvas.height / (3));
+        ctx.fillStyle = "red";
         ctx.font = `${size / 8}px Arial`;
         ctx.fillText(`PLAY AGAIN?`, canvas.width / 2, 3 * canvas.height / 4);
         afile.pause();
