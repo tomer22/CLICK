@@ -157,6 +157,8 @@ class Player extends Actor {
             isDying =1;
             },500)
         let bount = 5
+        boomsound.load()
+        boomsound.play()
         for (let i=0;i<bount;i++){
                 actorList.addActor(new SharpRock(this.x,this.y,-Math.PI/2+i*2*Math.PI/bount,this.color,this.r/(bount**(1/4))))
         }

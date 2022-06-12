@@ -12,6 +12,9 @@ let isMobile = window.mobileCheck();
 let file = new FileReader();
 let orders;
 let afile;
+let deathsound = new Audio("../audio/AWW.mp3");
+let boomsound = new Audio("../audio/BOOM3.mp3");
+let winsound = new Audio("../audio/YAYYY.mp3");
 let playing = false;
 let playing2 = false;
 let difficulty = 1;
@@ -21,6 +24,7 @@ let isStarting = 0;
 let difHts = [100, 10, 5, 3, 1];
 let difColsBord = ["#125e34", "#737d1e", "#7d601e", "#7d1e1e"];
 let difCols = ["green", "yellow", "orange", "#ab2929"];
+let difNames = ["Nonexistent", "EASY", "NORMAL", "HARD", "!!DEATH!!"];
 // 1 is loss, 2 is win, 0 is in progress
 let gameState = 0;
 document.getElementById('inputFile').addEventListener('change', function () {
@@ -88,7 +92,8 @@ function draw() {
         ctx.fillStyle = "red";
         ctx.fillText(`YOU WIN`, canvas.width / 2, canvas.height / 5);
         ctx.font = `${size / 6}px Arial`;
-        ctx.fillText(`(Difficulty:${difficulty})`, canvas.width / 2, canvas.height / (3));
+        let difName = difNames[difficulty];
+        ctx.fillText(`${difName} MODE`, canvas.width / 2, canvas.height / (3));
         ctx.font = `${size / 8}px Arial`;
         ctx.fillText(`PLAY AGAIN?`, canvas.width / 2, 3 * canvas.height / 4);
         afile.pause();
@@ -167,12 +172,17 @@ function draw() {
             ctx.fillStyle = difCols[i];
             ctx.fillRect(shiftX + size / 50 + i * size / maxDifficulty, shiftY + 3 * size / 4, -2 * size / 50 + size / maxDifficulty, size / 8);
         }
+        ctx.fillStyle = difCols[difficulty - 1];
+        ctx.font = `${size / 8}px Helvetica`;
+        ctx.fillText(`${difNames[difficulty]}`, canvas.width / 2, 7 * canvas.height / 8);
     }
     if (isWinning == 1) {
         screeeen++;
         if (screeeen > 30) {
             isWinning = 2;
             gameState = 2;
+            winsound.load();
+            winsound.play();
         }
     }
     else if (isWinning == 2) {
@@ -187,6 +197,8 @@ function draw() {
         if (screeeen > 30) {
             isDying = 2;
             gameState = 1;
+            deathsound.load();
+            deathsound.play();
         }
     }
     else if (isDying == 2) {
