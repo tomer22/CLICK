@@ -66,10 +66,12 @@ function draw() {
     shiftX = (canvas.width - size) / 2;
     shiftY = (canvas.height - size) / 2;
     if (gameState == 1) {
-        ctx.font = `${size / 3}px serif`;
+        ctx.font = `${size / 4}px Helvetica`;
         ctx.textAlign = "center";
         ctx.fillStyle = "blue";
-        ctx.fillText('YOU DIED', canvas.width / 2, canvas.height / 3);
+        ctx.fillText('YOU DIED', canvas.width / 2, canvas.height / 4);
+        ctx.font = `${size / 8}px Helvetica`;
+        ctx.fillText(`TRY AGAIN?`, canvas.width / 2, 3 * canvas.height / 4);
         afile.pause();
         ctx.fillStyle = "#db9039";
         ctx.fillRect(shiftX + size / 3, shiftY + size / 3, size / 3, size / 3);
@@ -81,10 +83,14 @@ function draw() {
         ctx.fill();
     }
     else if (gameState == 2) {
-        ctx.font = `${size / 3}px serif`;
+        ctx.font = `${size / 4}px Arial`;
         ctx.textAlign = "center";
         ctx.fillStyle = "red";
-        ctx.fillText(`YOU WIN ${difficulty}`, canvas.width / 2, canvas.height / 3);
+        ctx.fillText(`YOU WIN`, canvas.width / 2, canvas.height / 5);
+        ctx.font = `${size / 6}px Arial`;
+        ctx.fillText(`(Difficulty:${difficulty})`, canvas.width / 2, canvas.height / (3));
+        ctx.font = `${size / 8}px Arial`;
+        ctx.fillText(`PLAY AGAIN?`, canvas.width / 2, 3 * canvas.height / 4);
         afile.pause();
         ctx.fillStyle = "#db9039";
         ctx.fillRect(shiftX + size / 3, shiftY + size / 3, size / 3, size / 3);
@@ -141,6 +147,10 @@ function draw() {
         }
     }
     else {
+        ctx.textAlign = "center";
+        ctx.fillStyle = "darkgreen";
+        ctx.font = `${size / 4}px Helvetica`;
+        ctx.fillText('CLICK', canvas.width / 2, canvas.height / 4);
         ctx.fillStyle = "#32a852";
         ctx.fillRect(shiftX + size / 3, shiftY + size / 3, size / 3, size / 3);
         ctx.fillStyle = backgroundColor;
