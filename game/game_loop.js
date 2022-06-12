@@ -69,7 +69,7 @@ function draw() {
         ctx.font = `${size / 4}px Helvetica`;
         ctx.textAlign = "center";
         ctx.fillStyle = "blue";
-        ctx.fillText('YOU DIED', canvas.width / 2, canvas.height / 4);
+        ctx.fillText('YOU DIED', canvas.width / 2, canvas.height / 3);
         ctx.font = `${size / 8}px Helvetica`;
         ctx.fillText(`TRY AGAIN?`, canvas.width / 2, 3 * canvas.height / 4);
         afile.pause();
@@ -150,7 +150,7 @@ function draw() {
         ctx.textAlign = "center";
         ctx.fillStyle = "darkgreen";
         ctx.font = `${size / 4}px Helvetica`;
-        ctx.fillText('CLICK', canvas.width / 2, canvas.height / 4);
+        ctx.fillText('CLICK', canvas.width / 2, canvas.height / 3);
         ctx.fillStyle = "#32a852";
         ctx.fillRect(shiftX + size / 3, shiftY + size / 3, size / 3, size / 3);
         ctx.fillStyle = backgroundColor;
