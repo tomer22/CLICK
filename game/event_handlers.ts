@@ -52,8 +52,8 @@ function onStart(){
     positions = [];
      curFrame = 1;
      curFrame2 = 1;
-    mxHth = 10;
-    pHth  = 10;
+    mxHth = 20;
+    pHth  = 20;
     gameState = 0;
   
     playing = false;
