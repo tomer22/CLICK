@@ -17,14 +17,14 @@ let boomsound = new Audio("../audio/BOOM3.mp3");
 let winsound = new Audio("../audio/YAYYY.mp3");
 let playing = false;
 let playing2 = false;
-let difficulty = 1;
-let maxDifficulty = 4;
+let difficulty = 2;
+let maxDifficulty = 5;
 let screeeen = 0;
 let isStarting = 0;
-let difHts = [100, 20, 10, 5, 1];
-let difColsBord = ["#125e34", "#737d1e", "#7d601e", "#7d1e1e"];
-let difCols = ["green", "yellow", "orange", "#ab2929"];
-let difNames = ["Nonexistent", "EASY", "NORMAL", "HARD", "!!DEATH!!"];
+let difHts = [100, 50, 20, 10, 5, 1];
+let difColsBord = ["#4b7cc9", "#125e34", "#737d1e", "#7d601e", "#7d1e1e"];
+let difCols = ["#679aeb", "green", "yellow", "orange", "#ab2929"];
+let difNames = ["Nonexistent", "BABY", "EASY", "NORMAL", "HARD", "!!DEATH!!"];
 // 1 is loss, 2 is win, 0 is in progress
 let gameState = 0;
 document.getElementById('inputFile').addEventListener('change', function () {

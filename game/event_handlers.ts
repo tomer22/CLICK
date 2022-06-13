@@ -58,7 +58,7 @@ function onStart(){
   
     playing = false;
     playing2 = false;
-    difficulty = 1;
+    difficulty = 2;
 
     screeeen = 0;
     isStarting = 0;
