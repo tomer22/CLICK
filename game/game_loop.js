@@ -13,7 +13,7 @@ let file = new FileReader();
 let orders;
 let afile;
 let deathsound = new Audio("../audio/AWW.mp3");
-let boomsound = new Audio("../audio/BOOM3.mp3");
+let boomsound = new Audio("../audio/deathsound.mp3");
 let winsound = new Audio("../audio/YAYYY.mp3");
 let playing = false;
 let playing2 = false;
