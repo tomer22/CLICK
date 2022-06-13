@@ -1,7 +1,7 @@
 // first try at live beat detection from fft data
 // contains two classes : one for onset detection - OnsetDetect and one to detect when amplitude reaches a certain treshold - BeatDetect (probably ill named)
 
-var file ='../audio/ASGORE.mp3'
+var file ='../audio/UNDYNE.mp3'
 //var file ='../audio/MUFFET.mp3'
 
 

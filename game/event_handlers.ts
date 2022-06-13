@@ -6,14 +6,17 @@ const upKey = "w"
 const leftKey = "a"
 const downKey = "s"
 const rightKey = "d"
-
-let circles = 1;
+let attacks = [];
+let circles = 6;
 // Didn't want a down down variable, so I stuck with the letters
+let isWinning = 0;
 let wDown = 0;
 let aDown = 0;
 let sDown = 0;
 let dDown = 0;
-let player : Player = new Player(.5,.5);; 
+let isDying = 0;
+let isDead =0;
+let player : Player; 
 
 
 window.addEventListener("load", function() {
@@ -22,22 +25,94 @@ window.addEventListener("load", function() {
 
     //Often, this includes populating the actorList.
     // A sample:
-        
-    actorList.addActor(player);
+        onStart()
+   
+   
+    
 
- 
 
 })
+function onStart(){
+    for (let attackk of attacks){
+        clearInterval(attackk);
+    }
+    actorList.removeAllActors()
+    player = new Player(.5,.5);; 
+    actorList.addActor(player);
+  
+    attacks = [];
+    circles = 6;
+    // Didn't want a down down variable, so I stuck with the letters
+    isWinning = 0;
+    wDown = 0;
+    aDown = 0;
+    sDown = 0;
+    dDown = 0;
+    tLength = 7;
+    positions = [];
+     curFrame = 1;
+     curFrame2 = 1;
+    mxHth = 20;
+    pHth  = 20;
+    gameState = 0;
+  
+    playing = false;
+    playing2 = false;
+    difficulty = 1;
+
+    screeeen = 0;
+    isStarting = 0;
+    isDying = 0;
+    isDead = 0;
+        
+}
 
 canvas.addEventListener("click", function(event: MouseEvent) {
     //Handle click events
     //Get position of click on canvas: event.offsetX, event.offsetY
+    if (!playing){
+        if (event.offsetX > shiftX+size/3 && event.offsetX < shiftX + 2*size/3 && event.offsetY > shiftY+size/3 && event.offsetY < shiftY + 2*size/3){
+            if (isMobile){
+            if (event.offsetX > shiftX+size/3 && event.offsetX < shiftX + 2*size/3 && event.offsetY > shiftY+size/3 && event.offsetY < shiftY + 2*size/3){
+                orders = battles[0].split("\n")
+                console.log(orders)
+                afile = new Audio("../audio/"+orders[0])
+                afile.load()
+                setTimeout(function(){
+                    afile.play()
+                    playing2 = true;
+                },1000)
+                playing = true;
+                gameState = 0;
+            }
+        }
+        else{
+            isStarting = 1;
+        }
+            
+        }
+        for (let i=0;i<maxDifficulty;i++){
+                
+            if(event.offsetX > shiftX+size/50+i*size/maxDifficulty && event.offsetX < shiftX+size/50+i*size/maxDifficulty - 2*size/50+size/maxDifficulty &&
+            event.offsetY > shiftY+3*size/4 && event.offsetY < shiftY+3*size/4+ size/8){
+                difficulty = i+1
+                mxHth = difHts[difficulty]
+                pHth = difHts[difficulty]
+            }
+            
+        }
+    }
+    if (gameState == 1 || gameState == 2){
+        if (event.offsetX > shiftX+size/3 && event.offsetX < shiftX + 2*size/3 && event.offsetY > shiftY+size/3 && event.offsetY < shiftY + 2*size/3){
+            onStart();
+        }
+    }
 });
 
 document.addEventListener("keydown", function(event: KeyboardEvent){
     if (event.key==="p"){
         circles++;
-        circles%=6;
+        circles%=7;
     }
      if (event.key === leftKey || event.key === "ArrowLeft"){
         player.xVelocity = -5/(500);
@@ -138,7 +213,7 @@ function healBall() {
 // Draw harmful balls in an interval
 setInterval( function() {
     if (circles==1){
-        pealBall();
+       // pealBall();
         //patternCircles(0,sign);
     }
 }, 150)
@@ -146,8 +221,8 @@ setInterval( function() {
 
 // Changes the attack every 5 secs
 setInterval(function() {
-    circles++;
-    circles%=6;
+    // circles++;
+    // circles%=6;
 }, 5000)
 
 
@@ -174,7 +249,6 @@ setInterval( function() {
         setTimeout(function(){slam(side,count,spot);},delay)
     }
 }, 200)
-
 
 // Squares appear in ground
 
@@ -225,11 +299,11 @@ function sign(x:number){
 }
 
 // Creates expanding squares in a random spot
-function mettaton(){
-    let count = 5;
-    let hex = Math.floor(Math.random()*count)
-    let hi = Math.floor(Math.random()*count)
-    actorList.addActor(new expandingSquare((hex+.5)/count,(hi+.5)/count,.01,1/count,50));
+function mettaton(c=5,x=Math.floor(Math.random()*5),y=Math.floor(Math.random()*5)){
+    let count = c;
+    let hex = x
+    let hi = y
+    actorList.addActor(new expandingSquare((hex+.5)/count,(hi+.5)/count,.01,1/count,30));
 }
 
 
@@ -279,9 +353,9 @@ function slam(side:number,count:number,spot:number){
 
 
 // summons swords from one of three directions
-function swordRain(count:number = Math.random()*4+5,speed:number= Math.random()/500+.009) {
+function swordRain(count:number = Math.random()*4+5,speed:number= Math.random()/500+.009, sid:number = Math.floor(Math.random()*3)) {
 
-    let side = Math.floor(Math.random()*3);
+    let side = sid;
 
     let width = (.3*6)/(count**2);
   
@@ -290,7 +364,7 @@ function swordRain(count:number = Math.random()*4+5,speed:number= Math.random()/
         for (let i=0;i<count;i++){
             
             // actorList.addActor(new Sword((i+Math.random()*.5+.25)/count,-1,width,.2,0,Math.random()/100+.005))
-            actorList.addActor(new Sword((i+Math.random()*.5+.25)/(count+.5),-.2,width,.2,0,speed))
+            actorList.addActor(new Sword((i+Math.random()*.5+.25)/(count),-.2,width,.2,0,speed))
         }
     }
     else if (side===1){
@@ -298,14 +372,14 @@ function swordRain(count:number = Math.random()*4+5,speed:number= Math.random()/
             
             
             // actorList.addActor(new Sword(-1,(i+Math.random()*.5+.25)/count,.2,width,Math.random()/100+.005,0))
-            actorList.addActor(new Sword(-.2,(i+Math.random()*.5+.25)/(count+.5),.2,width,speed,0))
+            actorList.addActor(new Sword(-.2,(i+Math.random()*.5+.25)/(count),.2,width,speed,0))
         }
     }
     else if (side===2){
         for (let i=0;i<count;i++){
             
             // actorList.addActor(new Sword(2,(i+Math.random()*.5+.25)/count,.2,width,-(Math.random()/100+.005),0))
-            actorList.addActor(new Sword(1.2,(i+Math.random()*.5+.25)/(count+.5),.2,width,-speed,0))
+            actorList.addActor(new Sword(1.2,(i+Math.random()*.5+.25)/(count),.2,width,-speed,0))
         }
     }
     else{
@@ -348,13 +422,192 @@ function funkyRain(count:number = Math.random()*4+5,speed:number= Math.random()/
 
 
 // Summons hurt 
-function pealBall() {
-    actorList.addActor( new Rock(Math.random()))
+function pealBall(x:number,y:number,z:number,d=0) {
+    actorList.addActor( new Rock(x,y,z,d))
 }
 
 
 
+function readattack(curFrame22:number){
 
+    let order = orders[curFrame22];
+    let border = order.split(" ");
+    console.log(curFrame,curFrame22,border[0])
+    while(Number(border[0]) == curFrame){
+        curFrame2++;
+        if (border[1]==="win"){
+            isWinning = 1;
+        }
+        else if (border[1] ==="a"){
+            switch (border[2]) {
+                case "1":
+                    let ang = -10;
+                    let x = "random"
+                    let y = "random"
+                    let c = 0;
+                    let c2 = 1;
+                    let decay = 100
+                    if (border[5]=="1"){
+                        ang = "two"
+
+                    }
+                    if (border[5]=="2"){
+                        y = -.5
+                        decay = 50
+
+                    }
+                    attacks[Number(border[3])] = setInterval(function(){
+                        let inpx = x;
+                        let inpy = y;
+                        c++;
+                        c++;
+                        if (c>=20){
+                            c=0
+                            c2 = 0-c2;
+                        }
+
+                        let inpang = ang;
+                        if (inpang =="two"){
+                            inpx = .5 + c2
+                            if (c2<0){
+                                inpy = (2 - c/10)-.5;
+                            }
+                            else{
+                                inpy = (c/10)-.5;
+                            }
+                            let xdif = player.x-inpx;
+                            let ydif = player.y-inpy;
+                            if (xdif<=0 && ydif<=0){
+                                inpang =   Math.PI/2-Math.acos(Math.abs(player.y-inpy)/Math.sqrt((player.y-inpy)**2+(player.x-inpx)**2));
+                            }
+                            else if (xdif>=0 && ydif<=0){
+                                inpang =   Math.PI/2+Math.acos(Math.abs(player.y-inpy)/Math.sqrt((player.y-inpy)**2+(player.x-inpx)**2));
+                            }
+                            else if (xdif<=0 && ydif>=0){
+                                inpang =   -Math.PI/2+Math.acos(Math.abs(player.y-inpy)/Math.sqrt((player.y-inpy)**2+(player.x-inpx)**2));
+                            }
+                            else{
+                                inpang =   -Math.PI/2-Math.acos(Math.abs(player.y-inpy)/Math.sqrt((player.y-inpy)**2+(player.x-inpx)**2));
+                            
+                            }
+                            // if (inpx>0){
+                            //     inpang = Math.PI+Math.acos(Math.abs(player.y-inpy)/Math.sqrt((player.y-inpy)**2+(player.x-inpx)**2))
+                                
+                            // }
+                            // else{
+                            //     inpang = Math.PI-Math.asin(Math.abs(player.y-inpy)/Math.sqrt((player.y-inpy)**2+(player.x-inpx)**2))
+                            // }
+
+                        }
+                        if (inpx=="random"){
+                            inpx = Math.random()
+                        }
+                        if (inpy=="random"){
+                            inpy = Math.random()
+                        }
+                        pealBall(inpx,inpy,inpang,decay)
+                    },Number(border[4]));
+                    
+                    break;
+                case "2":
+                    let side = 0;
+                    let count = 5;
+                   
+                    if (border[5]){
+                        count = Number(border[5])
+                    }
+                    let spot = Math.floor(Math.random()*count);
+                    if (border[6]){
+                        spot = Number(border[6])
+                    }
+                    if (border[7]){
+                        side = Number(border[7])
+                    }
+                    let delay = 500;
+                    attacks[Number(border[3])] = setInterval(function(){
+                        // spot++;
+                        // if (spot >=count-1){
+                        //     spot %= count-1;
+                        //     side++;
+                        //     side%=4;
+                        // }
+                        slamWarning(side,count,spot,delay)
+                        setTimeout(function(){if (playing && gameState ==0){slam(side,count,spot);}},delay)
+                    },Number(border[4]));
+                    break;
+                case "3":
+                    let order = [12,11,7,13,17,6,8,18,16,0,4,24,20,10,2,14,22,5,1,3,9,19,23,21,15,5]
+                    let metspot = -1;
+                    let metcount = 5
+                    console.log('test')
+                    attacks[Number(border[3])] = setInterval(function(){
+                        // spot++;
+                        // if (spot >=count-1){
+                        //     spot %= count-1;
+                        //     side++;
+                        //     side%=4;
+                        // }
+                        metspot++;
+                        if (metspot >=order.length){
+                            metspot %= order.length
+                        }
+                        mettaton(metcount,order[metspot]%metcount,Math.floor(order[metspot]/metcount));
+                    },Number(border[4]));
+                    break;
+                case "4":
+                    if (border[5]=="1"){
+                    attacks[Number(border[3])] = setInterval(function(){
+                        // spot++;
+                        // if (spot >=count-1){
+                        //     spot %= count-1;
+                        //     side++;
+                        //     side%=4;
+                        // }
+                       bombs();
+                    },Number(border[4]));
+                    }
+                    else{
+                        attacks[Number(border[3])] = setInterval(function(){
+                            // spot++;
+                            // if (spot >=count-1){
+                            //     spot %= count-1;
+                            //     side++;
+                            //     side%=4;
+                            // }
+                           bombz();
+                        },Number(border[4]));
+                    }
+                    break;
+                case "5":
+                    let si = 1
+                    let coun = 6
+                    if (border[5]){
+                        coun = Number(border[5])
+                    }
+                    attacks[Number(border[3])] = setInterval(function(){
+                        // spot++;
+                        // if (spot >=count-1){
+                        //     spot %= count-1;
+                        //     side++;
+                        //     side%=4;
+                        // }
+                        si = 3-si
+                       swordRain(coun,1/100,si);
+                    },Number(border[4]));
+                default:
+                    break;
+            }
+        }
+        else if (border[1] ==="b"){
+            // console.log(border)
+            // console.log(attacks[Number(border[2])]);
+            clearInterval(attacks[Number(border[2])]);
+        }
+        order = orders[curFrame2];
+     border = order.split(" ");
+    }
+   
+}
 
 // setTimeout(createRock, Math.random() * 2000 + 1000);
 
@@ -366,3 +619,121 @@ function pealBall() {
 // // setInterval(function () {
 //     actorList.addActor(new Flower(Math.random() * (620) + 690, (Math.random() * (620) + 690),50));
 // }, 2000);
+window.addEventListener('load', () => {
+    if (isMobile){
+      resize();
+
+      document.addEventListener('touchstart', startDrawing);
+      document.addEventListener('touchend', stopDrawing);
+      document.addEventListener('touchcancel', stopDrawing);
+      document.addEventListener('touchmove', Draw);
+      window.addEventListener('resize', resize);}
+
+      
+  });
+
+
+
+
+  var hwidth, hheight, hradius, hx_orig, hy_orig;
+  function resize() {
+      hwidth = window.innerWidth;
+      hradius = size/6;
+      hheight = hradius * 6.5;
+      background();
+      joystick(shiftX/3, shiftY+5*size/6);
+  }
+
+  function background() {
+      hx_orig = shiftX/3;
+      hy_orig = shiftY+5*size/6;
+
+      ctx.beginPath();
+      ctx.arc(hx_orig, hy_orig, size/6, 0, Math.PI * 2, true);
+      ctx.fillStyle = '#ECE5E5';
+      ctx.fill();
+  }
+
+  function joystick(hhwidth, hhheight) {
+      ctx.beginPath();
+      ctx.arc(hhwidth, hhheight, size/6, 0, Math.PI * 2, true);
+      ctx.fillStyle = '#F08080';
+      ctx.fill();
+      ctx.strokeStyle = '#F6ABAB';
+      ctx.lineWidth = 8;
+      ctx.stroke();
+  }
+
+  let coord = { x: 0, y: 0 };
+  let paint = false;
+
+  function getPosition(event) {
+      var mouse_x = event.clientX || event.touches[0].clientX;
+      var mouse_y = event.clientY || event.touches[0].clientY;
+      coord.x = mouse_x - canvas.offsetLeft;
+      coord.y = mouse_y - canvas.offsetTop;
+  }
+
+  function is_it_in_the_circle() {
+      var current_radius = Math.sqrt(Math.pow(coord.x - hx_orig, 2) + Math.pow(coord.y - hy_orig, 2));
+      if (size/6 >= current_radius) return true
+      else return false
+  }
+  
+
+  function startDrawing(event) {
+      paint = true;
+      getPosition(event);
+      if (is_it_in_the_circle()) {
+         // ctx.clearRect(0, 0, canvas.width, canvas.height);
+          background();
+          joystick(coord.x, coord.y);
+          Draw(event);
+      }
+  }
+
+
+  function stopDrawing() {
+      paint = false;
+      ctx.clearRect(0, 0, canvas.width/4, canvas.height);
+      background();
+      joystick(shiftX/3, shiftY+5*size/6);
+      player.yVelocity = 0
+      player.xVelocity = 0
+
+
+  }
+
+  function Draw(event) {
+      getPosition(event);
+      if (paint) {
+          //ctx.clearRect(0, 0, canvas.width, canvas.height);
+          background();
+          var angle_in_degrees,x, y, speed;
+          var angle = Math.atan2((coord.y - hy_orig), (coord.x - hx_orig));
+
+          if (Math.sign(angle) == -1) {
+              angle_in_degrees = Math.round(-angle * 180 / Math.PI);
+          }
+          else {
+              angle_in_degrees =Math.round( 360 - angle * 180 / Math.PI);
+          }
+
+
+          if (is_it_in_the_circle()) {
+              joystick(coord.x, coord.y);
+              x = coord.x;
+              y = coord.y;
+          }
+          else {
+              x = size/6 * Math.cos(angle) + hx_orig;
+              y = size/6 * Math.sin(angle) + hy_orig;
+              joystick(x, y);
+          }
+
+      
+          getPosition(event);
+          player.yVelocity = 7 * Math.sin(angle)/500
+          player.xVelocity = 7 * Math.cos(angle)/500
+      }
+  } 
