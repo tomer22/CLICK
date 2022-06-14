@@ -300,7 +300,7 @@ setInterval( function() {
 function bombs(x = Math.random()*.8+.1, y= Math.random()*.8+.1) {
     if (x=="metbomb"){
         console.log(y)
-        actorList.addActor( new LaserBomb(Math.random()*.3+.35,Math.random()*.3+.35,90,Number(y)));
+        actorList.addActor( new LaserBomb(Math.random()*.5+.25,Math.random()*.5+.25,90,Number(y)));
     }else{
     actorList.addActor( new LaserBomb(x,y,90));
 }
@@ -309,7 +309,7 @@ function bombs(x = Math.random()*.8+.1, y= Math.random()*.8+.1) {
 function bombz(x = Math.random()*.8+.1, y= Math.random()*.8+.1) {
     if (x=="metbomb"){
         console.log(y)
-        actorList.addActor( new CircleBomb(Math.random()*.3+.35,Math.random()*.3+.35,90));
+        actorList.addActor( new CircleBomb(Math.random()*.5+.25,Math.random()*.5+.25,90));
     }else{
     actorList.addActor( new CircleBomb(x,y,90));}
 };
