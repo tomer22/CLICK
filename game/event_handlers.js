@@ -487,19 +487,21 @@ function readattack(curFrame22) {
                     console.log('test');
                     if (border[5] == "1") {
                         setTimeout(function () {
-                            attacks[Number(b3)] = setInterval(function () {
-                                // spot++;
-                                // if (spot >=count-1){
-                                //     spot %= count-1;
-                                //     side++;
-                                //     side%=4;
-                                // }
-                                circspot++;
-                                if (circspot >= circorder.length) {
-                                    circspot %= circorder.length;
-                                }
-                                mettaton(metcount, circorder[circspot] % metcount, Math.floor(circorder[circspot] / metcount));
-                            }, Number(b4));
+                            if (curFrame > timeplacard / 1000 * 29) {
+                                attacks[Number(b3)] = setInterval(function () {
+                                    // spot++;
+                                    // if (spot >=count-1){
+                                    //     spot %= count-1;
+                                    //     side++;
+                                    //     side%=4;
+                                    // }
+                                    circspot++;
+                                    if (circspot >= circorder.length) {
+                                        circspot %= circorder.length;
+                                    }
+                                    mettaton(metcount, circorder[circspot] % metcount, Math.floor(circorder[circspot] / metcount));
+                                }, Number(b4));
+                            }
                         }, timeplacard);
                     }
                     else if (border[5] == "2") {
@@ -519,20 +521,22 @@ function readattack(curFrame22) {
                     }
                     else if (border[5] == "3") {
                         setTimeout(function () {
-                            attacks[Number(b3)] = setInterval(function () {
-                                // spot++;
-                                // if (spot >=count-1){
-                                //     spot %= count-1;
-                                //     side++;
-                                //     side%=4;
-                                // }
-                                precorded--;
-                                if (precorded < 0) {
-                                    precorded += metcount ** 2;
-                                    precorded %= metcount ** 2;
-                                }
-                                mettaton(metcount, precorded % metcount, Math.floor(precorded / metcount));
-                            }, Number(b4));
+                            if (curFrame > timeplacard / 1000 * 29) {
+                                attacks[Number(b3)] = setInterval(function () {
+                                    // spot++;
+                                    // if (spot >=count-1){
+                                    //     spot %= count-1;
+                                    //     side++;
+                                    //     side%=4;
+                                    // }
+                                    precorded--;
+                                    if (precorded < 0) {
+                                        precorded += metcount ** 2;
+                                        precorded %= metcount ** 2;
+                                    }
+                                    mettaton(metcount, precorded % metcount, Math.floor(precorded / metcount));
+                                }, Number(b4));
+                            }
                         }, timeplacard);
                     }
                     else {
