@@ -20,14 +20,18 @@ let boomsound = new Audio("../audio/deathsound.mp3")
 let winsound = new Audio("../audio/YAYYY.mp3")
 let playing = false;
 let playing2 = false;
-let difficulty = 1;
-let maxDifficulty = 4;
+let difficulty = 2;
+let maxDifficulty = 5;
 let screeeen = 0;
 let isStarting = 0;
-let difHts = [100,20,10,5,1]
-let difColsBord = ["#125e34","#737d1e","#7d601e","#7d1e1e"]
-let difCols = ["green","yellow","orange","#ab2929"]
-let difNames = ["Nonexistent","EASY","NORMAL","HARD","!!DEATH!!"]
+let songChoice = 0;
+let difHts = [100,50,20,10,5,1]
+let songNames = ["SPEAR OF JUSTICE","SPIDER DANCE", "DEATH BY GLAMOUR"]
+let songColsBord = ["#016b91","#aa1bcc","#c946e8"]
+let songCols = ["#0b8fbf","#e310dc","#db81f0"]
+let difColsBord = ["#4b7cc9","#125e34","#737d1e","#7d601e","#7d1e1e"]
+let difCols = ["#679aeb","green","yellow","orange","#ab2929"]
+let difNames = ["Nonexistent","BABY","EASY","NORMAL","HARD","!!DEATH!!"]
 // 1 is loss, 2 is win, 0 is in progress
 let gameState = 0
 document.getElementById('inputFile').addEventListener('change', function() {
@@ -102,17 +106,21 @@ function draw(){
     }
     else if (gameState==2){
 
-        ctx.font = `${size/4}px Arial`;
+        ctx.font = `${size/4}px Helvetica`;
         ctx.textAlign = "center"
         ctx.fillStyle = "red"
         ctx.fillText(`YOU WIN`, canvas.width/2, canvas.height/5);
-        ctx.font = `${size/6}px Arial`;
+        ctx.font = `${size/8}px Helvetica`;
+        let songName = songNames[songChoice];
+        ctx.fillStyle = `${songCols[songChoice]}`
+        ctx.fillText(`${songName}`, canvas.width/2, canvas.height/3)
+        ctx.font = `${size/6}px Helvetica`;
         let difName = difNames[difficulty];
         ctx.fillStyle = `${difCols[difficulty-1]}`
-        ctx.fillText(`${difName} MODE`, canvas.width/2, canvas.height/(3))
+        ctx.fillText(`${difName} MODE`, canvas.width/2, 3*canvas.height/(4))
         ctx.fillStyle = "red"
-        ctx.font = `${size/8}px Arial`;
-        ctx.fillText(`PLAY AGAIN?`, canvas.width/2, 3*canvas.height/4);
+        ctx.font = `${size/8}px Helvetica`;
+        ctx.fillText(`PLAY AGAIN?`, canvas.width/2, 3*canvas.height/3.4);
         afile.pause();
         ctx.fillStyle = "#db9039";
         ctx.fillRect(shiftX+size/3,shiftY+size/3, size/3, size/3);
@@ -180,8 +188,20 @@ function draw(){
         ctx.textAlign = "center"
         ctx.fillStyle = "darkgreen"
         ctx.font = `${size/4}px Helvetica`;
-        ctx.fillText('CLICK', canvas.width/2, canvas.height/3);
-
+        ctx.fillText('CLICK', canvas.width/2, canvas.height/6.5);
+        ctx.font = `${size/8}px Helvetica`;
+        ctx.fillStyle = songCols[songChoice];
+        ctx.fillText(`${songNames[songChoice]}`, canvas.width/2, canvas.height/3.9);
+        for (let i=0;i<songNames.length;i++){
+            
+            if (i==songChoice){
+                ctx.fillStyle = songColsBord[i]
+                ctx.fillRect(shiftX+size/75+i*size/songNames.length,shiftY+size/5.2 - (size/9-size/10)/2, -2*size/75+size/songNames.length, size/9);
+            }
+            ctx.fillStyle = songCols[i]
+            ctx.fillRect(shiftX+size/50+i*size/songNames.length,shiftY + size/5.2, -2*size/50+size/songNames.length, size/10);
+            
+        }
         ctx.fillStyle = "#32a852";
         ctx.fillRect(shiftX+size/3,shiftY+size/3, size/3, size/3);
         
@@ -245,7 +265,7 @@ function draw(){
         if (screeeen > 30){
             playing = true;
             isStarting = 2
-            orders = battles[0].split("\n")
+            orders = battles[songChoice].split("\n")
                 console.log(orders)
                 afile = new Audio("../audio/"+orders[0])
                 afile.load()

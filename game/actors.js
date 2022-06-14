@@ -327,6 +327,10 @@ class Bomb extends Rock {
     }
 }
 class LaserBomb extends Bomb {
+    constructor(x, y, decay, delay = 20) {
+        super(x, y, decay);
+        this.delay = delay;
+    }
     draw() {
         super.draw();
         let s1 = this.r;
@@ -336,8 +340,9 @@ class LaserBomb extends Bomb {
         ctx.fillRect(shiftX + this.x * size - s2 * size / 2, shiftY + this.y * size - s1 * size / 2, s2 * size, s1 * size);
     }
     onBoom() {
-        actorList.addActor(new Laser(.5, this.y, 1, 2 * this.r, 20));
-        actorList.addActor(new Laser(this.x, .5, 2 * this.r, 1, 20));
+        actorList.addActor(new Laser(.5, this.y, 1, 2 * this.r, this.delay));
+        console.log(this.delay);
+        actorList.addActor(new Laser(this.x, .5, 2 * this.r, 1, this.delay));
     }
 }
 class CircleBomb extends Bomb {
@@ -449,12 +454,13 @@ class Laser extends RectangleActor {
 }
 // Fun one, slams out then retracts
 class evilWall extends RectangleActor {
-    constructor(x, y, w, h, xV, yV) {
+    constructor(x, y, w, h, xV, yV, freeeeeeze = 0) {
         super(x, y, w, h);
         this.xV = xV;
         this.yV = yV;
         this.state = 1;
         this.backSpeed = 1 / 2;
+        this.freezee = freeeeeeze;
     }
     update() {
         // Its center moves forward but its dimensions increase to make it seem like its just stretching
@@ -486,23 +492,27 @@ class evilWall extends RectangleActor {
             }
         }
         else {
-            // The same thing as above, but in the other direction and slightly slower
-            this.x -= this.xV * this.backSpeed;
-            this.w -= this.xV * 2 * this.backSpeed;
-            this.y -= this.yV * this.backSpeed;
-            this.h -= this.yV * 2 * this.backSpeed;
-            // If it becomes too small, delete
-            if (this.h < 0 && this.yV > 0) {
-                actorList.removeActor(this);
+            if (this.freezee >= 0) {
+                this.freezee--;
             }
-            if (this.h > 0 && this.yV < 0) {
-                actorList.removeActor(this);
-            }
-            if (this.w < 0 && this.xV > 0) {
-                actorList.removeActor(this);
-            }
-            if (this.w > 0 && this.xV < 0) {
-                actorList.removeActor(this);
+            else {
+                this.x -= this.xV * this.backSpeed;
+                this.w -= this.xV * 2 * this.backSpeed;
+                this.y -= this.yV * this.backSpeed;
+                this.h -= this.yV * 2 * this.backSpeed;
+                // If it becomes too small, delete
+                if (this.h < 0 && this.yV > 0) {
+                    actorList.removeActor(this);
+                }
+                if (this.h > 0 && this.yV < 0) {
+                    actorList.removeActor(this);
+                }
+                if (this.w < 0 && this.xV > 0) {
+                    actorList.removeActor(this);
+                }
+                if (this.w > 0 && this.xV < 0) {
+                    actorList.removeActor(this);
+                }
             }
         }
         if (this.checkCol()) {
