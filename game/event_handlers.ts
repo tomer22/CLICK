@@ -10,6 +10,9 @@ let attacks = [];
 let circles = 6;
 // Didn't want a down down variable, so I stuck with the letters
 let isWinning = 0;
+let circspot = -1;
+let recorded = -1;
+let precorded = 0;
 let wDown = 0;
 let aDown = 0;
 let sDown = 0;
@@ -48,6 +51,7 @@ function onStart(){
     aDown = 0;
     sDown = 0;
     dDown = 0;
+    songChoice = 0;
     tLength = 7;
     positions = [];
      curFrame = 1;
@@ -59,11 +63,13 @@ function onStart(){
     playing = false;
     playing2 = false;
     difficulty = 2;
-
+    circspot = -1;
     screeeen = 0;
     isStarting = 0;
     isDying = 0;
     isDead = 0;
+    recorded = -1;
+    precorded = 25;
         
 }
 
@@ -74,7 +80,7 @@ canvas.addEventListener("click", function(event: MouseEvent) {
         if (event.offsetX > shiftX+size/3 && event.offsetX < shiftX + 2*size/3 && event.offsetY > shiftY+size/3 && event.offsetY < shiftY + 2*size/3){
             if (isMobile){
             if (event.offsetX > shiftX+size/3 && event.offsetX < shiftX + 2*size/3 && event.offsetY > shiftY+size/3 && event.offsetY < shiftY + 2*size/3){
-                orders = battles[0].split("\n")
+                orders = battles[songChoice].split("\n")
                 console.log(orders)
                 afile = new Audio("../audio/"+orders[0])
                 afile.load()
@@ -88,8 +94,17 @@ canvas.addEventListener("click", function(event: MouseEvent) {
         }
         else{
             isStarting = 1;
+            
         }
             
+        }
+        for (let i=0;i<songNames.length;i++){
+            
+            
+            if (event.offsetX > shiftX+size/50+i*size/songNames.length
+            && event.offsetY > shiftY + size/5.2 && event.offsetX <shiftX+size/50+i*size/songNames.length+ -2*size/50+size/songNames.length
+            && event.offsetY < shiftY + size/5.2 +size/10){
+            songChoice = i}
         }
         for (let i=0;i<maxDifficulty;i++){
                 
@@ -282,12 +297,21 @@ setInterval( function() {
     
 }, 1000)
 
-function bombs() {
-    actorList.addActor( new LaserBomb(Math.random()*.8+.1,Math.random()*.8+.1,90));
+function bombs(x = Math.random()*.8+.1, y= Math.random()*.8+.1) {
+    if (x=="metbomb"){
+        console.log(y)
+        actorList.addActor( new LaserBomb(Math.random()*.3+.35,Math.random()*.3+.35,90,Number(y)));
+    }else{
+    actorList.addActor( new LaserBomb(x,y,90));
+}
 };
 
-function bombz() {
-    actorList.addActor( new CircleBomb(Math.random()*.8+.1,Math.random()*.8+.1,90));
+function bombz(x = Math.random()*.8+.1, y= Math.random()*.8+.1) {
+    if (x=="metbomb"){
+        console.log(y)
+        actorList.addActor( new CircleBomb(Math.random()*.3+.35,Math.random()*.3+.35,90));
+    }else{
+    actorList.addActor( new CircleBomb(x,y,90));}
 };
 // Pattern circles accepts a function which dictates x -> y
 function patternCircles(lead:number,f:Function) {
@@ -333,20 +357,20 @@ function slamWarning(side:number,count:number,spot:number,delay:number){
 
 
 // Creates the evil wall which slams, then retracts
-function slam(side:number,count:number,spot:number){
+function slam(side:number,count:number,spot:number,freeeeeeze:number=0){
     
     let speed = .06
     if (side===0){
-        actorList.addActor(new evilWall((Math.floor(spot)+.5)/count,0,1/count,0,0,speed))
+        actorList.addActor(new evilWall((Math.floor(spot)+.5)/count,0,1/count,0,0,speed,freeeeeeze))
     }
     if (side===1){
-        actorList.addActor(new evilWall(0,(Math.floor(spot)+.5)/count,0,1/count,speed,0))
+        actorList.addActor(new evilWall(0,(Math.floor(spot)+.5)/count,0,1/count,speed,0,freeeeeeze))
     }
     if (side===2){
-        actorList.addActor(new evilWall(1,(Math.floor(spot)+.5)/count,0,1/count,-speed,0))
+        actorList.addActor(new evilWall(1,(Math.floor(spot)+.5)/count,0,1/count,-speed,0,freeeeeeze))
     }
     if (side===3){
-        actorList.addActor(new evilWall((Math.floor(spot)+.5)/count,1,1/count,0,0,-speed))
+        actorList.addActor(new evilWall((Math.floor(spot)+.5)/count,1,1/count,0,0,-speed,freeeeeeze))
     }
 
 }
@@ -512,6 +536,7 @@ function readattack(curFrame22:number){
                 case "2":
                     let side = 0;
                     let count = 5;
+                    let freeeeeeze = 0;
                    
                     if (border[5]){
                         count = Number(border[5])
@@ -523,6 +548,9 @@ function readattack(curFrame22:number){
                     if (border[7]){
                         side = Number(border[7])
                     }
+                    if (border[8]){
+                        freeeeeeze = Number(border[8])
+                    }
                     let delay = 500;
                     attacks[Number(border[3])] = setInterval(function(){
                         // spot++;
@@ -532,27 +560,85 @@ function readattack(curFrame22:number){
                         //     side%=4;
                         // }
                         slamWarning(side,count,spot,delay)
-                        setTimeout(function(){if (playing && gameState ==0){slam(side,count,spot);}},delay)
+                        setTimeout(function(){if (playing && gameState ==0){slam(side,count,spot,freeeeeeze);}},delay)
                     },Number(border[4]));
                     break;
                 case "3":
                     let order = [12,11,7,13,17,6,8,18,16,0,4,24,20,10,2,14,22,5,1,3,9,19,23,21,15,5]
+                    let circorder = [0,1,2,3,4,9,14,19,24,23,22,21,20,15,10,5]
                     let metspot = -1;
                     let metcount = 5
+                    let timeplacard = 0;
+                    let b3 = border[3]
+                    let b4 = border[4]
+                    if (border[6]){
+                        timeplacard = Number(border[6])
+                    }
                     console.log('test')
-                    attacks[Number(border[3])] = setInterval(function(){
-                        // spot++;
-                        // if (spot >=count-1){
-                        //     spot %= count-1;
-                        //     side++;
-                        //     side%=4;
-                        // }
-                        metspot++;
-                        if (metspot >=order.length){
-                            metspot %= order.length
-                        }
-                        mettaton(metcount,order[metspot]%metcount,Math.floor(order[metspot]/metcount));
-                    },Number(border[4]));
+                    if (border[5]=="1"){
+                        setTimeout(function(){
+                        attacks[Number(b3)] = setInterval(function(){
+                            // spot++;
+                            // if (spot >=count-1){
+                            //     spot %= count-1;
+                            //     side++;
+                            //     side%=4;
+                            // }
+                            circspot++;
+                            if (circspot >=circorder.length){
+                                circspot %= circorder.length
+                            }
+                            mettaton(metcount,circorder[circspot]%metcount,Math.floor(circorder[circspot]/metcount));
+                        },Number(b4));},timeplacard)
+                    }
+                    else if (border[5]=="2"){
+                        attacks[Number(b3)] = setInterval(function(){
+                            // spot++;
+                            // if (spot >=count-1){
+                            //     spot %= count-1;
+                            //     side++;
+                            //     side%=4;
+                            // }
+                            recorded++;
+                            if (recorded >=metcount**2){
+                                recorded %=metcount**2
+                            }
+                            mettaton(metcount,recorded%metcount,Math.floor(recorded/metcount));
+                        },Number(b4));
+                    }
+                    else if (border[5]=="3"){
+                    
+                        setTimeout(function(){
+                        attacks[Number(b3)] = setInterval(function(){
+                            // spot++;
+                            // if (spot >=count-1){
+                            //     spot %= count-1;
+                            //     side++;
+                            //     side%=4;
+                            // }
+                            precorded--;
+                            if (precorded <0){
+                                precorded += metcount**2
+                                precorded %=metcount**2
+                            }
+                            mettaton(metcount,precorded%metcount,Math.floor(precorded/metcount));
+                        },Number(b4));},timeplacard);
+                    }
+                    else{
+                        attacks[Number(border[3])] = setInterval(function(){
+                            // spot++;
+                            // if (spot >=count-1){
+                            //     spot %= count-1;
+                            //     side++;
+                            //     side%=4;
+                            // }
+                            metspot++;
+                            if (metspot >=order.length){
+                                metspot %= order.length
+                            }
+                            mettaton(metcount,order[metspot]%metcount,Math.floor(order[metspot]/metcount));
+                        },Number(border[4]));
+                    }
                     break;
                 case "4":
                     if (border[5]=="1"){
@@ -565,6 +651,32 @@ function readattack(curFrame22:number){
                         // }
                        bombs();
                     },Number(border[4]));
+                    }
+                    else if (border[5]=="3"){
+                        let b6 = border[6];
+                        attacks[Number(border[3])] = setInterval(function(){
+                            // spot++;
+                            // if (spot >=count-1){
+                            //     spot %= count-1;
+                            //     side++;
+                            //     side%=4;
+                            // }
+                           bombs("metbomb",Number(b6));
+                           console.log(border[6]);
+                        },Number(border[4]));
+                    }
+                    else if(border[5]=="4"){
+                        let b6 = border[6];
+                        attacks[Number(border[3])] = setInterval(function(){
+                            // spot++;
+                            // if (spot >=count-1){
+                            //     spot %= count-1;
+                            //     side++;
+                            //     side%=4;
+                            // }
+                           bombz("metbomb",Number(b6));
+                           console.log(border[6]);
+                        },Number(border[4]));
                     }
                     else{
                         attacks[Number(border[3])] = setInterval(function(){
