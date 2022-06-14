@@ -180,7 +180,7 @@ let battles = [`UNDYNE2.mp3
 3460 b 7
 3460 b 8
 3600 win`,
-`MUFFET2.mp3 
+    `MUFFET2.mp3 
 1 a 2 1 500 5 2 3
 21 b 1
 27 a 2 2 500 5 1
@@ -233,11 +233,15 @@ let battles = [`UNDYNE2.mp3
 860 b 3
 880 a 2 1 500 5 2 1
 895 a 2 2 500 5 3 2
+895 a 2 3 500 5 1 2
 900 b 1
 915 b 2
+915 b 3
 915 a 2 4 500 5 3 3
+915 a 2 1 500 5 1 1
 930 a 2 6 500 5 0 2
 930 a 2 7 500 5 4 2
+935 b 1
 935 b 4
 950 b 6 
 950 b 7
@@ -352,7 +356,7 @@ let battles = [`UNDYNE2.mp3
 3022 b 2 
 3022 b 3
 3060 win`,
-`METTATON.mp3
+    `METTATON.mp3
 1 a 3 0 405 2
 1 a 3 2 405 3 6885
 1 a 3 3 202.5 1 24705
@@ -540,4 +544,3 @@ let battles = [`UNDYNE2.mp3
 3930 b 7
 3945 b 8
 4120 win`];
-
